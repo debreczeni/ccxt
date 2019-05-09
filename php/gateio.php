@@ -328,8 +328,8 @@ class gateio extends Exchange {
             'change' => $change,
             'percentage' => $percentage,
             'average' => $average,
-            'baseVolume' => $this->safe_float($ticker, 'quoteVolume'),
-            'quoteVolume' => $this->safe_float($ticker, 'baseVolume'),
+            'baseVolume' => $this->safe_float($ticker, 'baseVolume'),
+            'quoteVolume' => $this->safe_float($ticker, 'quoteVolume'),
             'info' => $ticker,
         );
     }
@@ -681,7 +681,7 @@ class gateio extends Exchange {
         if ($since !== null) {
             $request['start'] = $since;
         }
-        $response = $this->privatePostDepositswithdrawals (array_merge ($request, $params));
+        $response = $this->privatePostDepositsWithdrawals (array_merge ($request, $params));
         $transactions = null;
         if ($type === null) {
             $deposits = $this->safe_value($response, 'deposits', array ());
