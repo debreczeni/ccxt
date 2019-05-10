@@ -270,7 +270,7 @@ module Ccxt
       return result
     end
 
-    def fetch_markets(params={})
+    def fetch_markets(params = {})
       markets = self.publicGetAssetPairs()
       limits = self.fetch_min_order_amounts()
       keys = list(markets['result'].keys())
@@ -360,7 +360,7 @@ module Ccxt
       return result
     end
 
-    def fetch_currencies(params={})
+    def fetch_currencies(params = {})
       response = self.publicGetAssets(params)
       #
       #     {
@@ -416,7 +416,7 @@ module Ccxt
       return result
     end
 
-    def fetch_trading_fees(params={})
+    def fetch_trading_fees(params = {})
       self.load_markets()
       self.check_required_credentials()
       response = self.privatePostTradeVolume(params)
@@ -437,7 +437,7 @@ module Ccxt
       }
     end
 
-    def fetch_order_book(symbol, limit = nil, params={})
+    def fetch_order_book(symbol, limit = nil, params = {})
       self.load_markets()
       market = self.market(symbol)
       if market['darkpool']
@@ -487,7 +487,7 @@ module Ccxt
       }
     end
 
-    def fetch_tickers(symbols = nil, params={})
+    def fetch_tickers(symbols = nil, params = {})
       self.load_markets()
       pairs = []
       for s in range(0, len(self.symbols)):
@@ -512,7 +512,7 @@ module Ccxt
       return result
     end
 
-    def fetch_ticker(symbol, params={})
+    def fetch_ticker(symbol, params = {})
       self.load_markets()
       darkpool = symbol.find('.d') >= 0
       if darkpool
@@ -536,7 +536,7 @@ module Ccxt
       ]
     end
 
-    def fetch_ohlcv(symbol, timeframe = '1m', since = nil, limit = nil, params={})
+    def fetch_ohlcv(symbol, timeframe = '1m', since = nil, limit = nil, params = {})
       self.load_markets()
       market = self.market(symbol)
       request = {
@@ -613,7 +613,7 @@ module Ccxt
       }
     end
 
-    def fetch_ledger(code = nil, since = nil, limit = nil, params={})
+    def fetch_ledger(code = nil, since = nil, limit = nil, params = {})
       # https://www.kraken.com/features/api#get-ledgers-info
       self.load_markets()
       request = {}
@@ -645,7 +645,7 @@ module Ccxt
       return self.parse_ledger(items, currency, since, limit)
     end
 
-    def fetch_ledger_entries_by_ids(ids, code = nil, params={})
+    def fetch_ledger_entries_by_ids(ids, code = nil, params = {})
       # https://www.kraken.com/features/api#query-ledgers
       self.load_markets()
       ids = ','.join(ids)
@@ -673,7 +673,7 @@ module Ccxt
       return self.parse_ledger(items)
     end
 
-    def fetch_ledger_entry(id, code = nil, params={})
+    def fetch_ledger_entry(id, code = nil, params = {})
       items = self.fetchLedgerEntrysByIds([id], code, params)
       return items[0]
 
@@ -737,7 +737,7 @@ module Ccxt
       }
     end
 
-    def fetch_trades(symbol, since = nil, limit = nil, params={})
+    def fetch_trades(symbol, since = nil, limit = nil, params = {})
       self.load_markets()
       market = self.market(symbol)
       id = market['id']
@@ -767,7 +767,7 @@ module Ccxt
       return self.parse_trades(trades, market, since, limit)
     end
 
-    def fetch_balance(params={})
+    def fetch_balance(params = {})
       self.load_markets()
       response = self.privatePostBalance(params)
       balances = self.safe_value(response, 'result')
@@ -797,7 +797,7 @@ module Ccxt
       return self.parse_balance(result)
     end
 
-    def create_order(symbol, type, side, amount, price = nil, params={})
+    def create_order(symbol, type, side, amount, price = nil, params = {})
       self.load_markets()
       market = self.market(symbol)
       order = {
@@ -969,7 +969,7 @@ module Ccxt
       return self.filter_by_since_limit(result, since, limit)
     end
 
-    def fetch_order(id, symbol = nil, params={})
+    def fetch_order(id, symbol = nil, params = {})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
         'trades' => true,  # whether or not to include trades in output(optional, default false)
@@ -981,7 +981,7 @@ module Ccxt
       return self.extend({'info' => response}, order)
     end
 
-    def fetch_orders_by_ids(ids, symbol = nil, params={})
+    def fetch_orders_by_ids(ids, symbol = nil, params = {})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
         'trades' => true,  # whether or not to include trades in output(optional, default false)
@@ -998,7 +998,7 @@ module Ccxt
       return orders
     end
 
-    def fetch_my_trades(symbol = nil, since = nil, limit = nil, params={})
+    def fetch_my_trades(symbol = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       request = {
         # 'type' => 'all',  # any position, closed position, closing position, no position
@@ -1045,7 +1045,7 @@ module Ccxt
       return self.filter_by_symbol(result, symbol)
     end
 
-    def cancel_order(id, symbol = nil, params={})
+    def cancel_order(id, symbol = nil, params = {})
       self.load_markets()
       response = nil
       try:
@@ -1060,7 +1060,7 @@ module Ccxt
       return response
     end
 
-    def fetch_open_orders(symbol = nil, since = nil, limit = nil, params={})
+    def fetch_open_orders(symbol = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       request = {}
       if since is not nil
@@ -1072,7 +1072,7 @@ module Ccxt
       return self.filter_by_symbol(orders, symbol)
     end
 
-    def fetch_closed_orders(symbol = nil, since = nil, limit = nil, params={})
+    def fetch_closed_orders(symbol = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       request = {}
       if since is not nil
@@ -1084,7 +1084,7 @@ module Ccxt
       return self.filter_by_symbol(orders, symbol)
     end
 
-    def fetch_deposit_methods(code, params={})
+    def fetch_deposit_methods(code, params = {})
       self.load_markets()
       currency = self.currency(code)
       response = self.privatePostDepositMethods(self.extend({
@@ -1184,7 +1184,7 @@ module Ccxt
       return self.filterByCurrencySinceLimit(result, code, since, limit)
     end
 
-    def fetch_deposits(code = nil, since = nil, limit = nil, params={})
+    def fetch_deposits(code = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       # https://www.kraken.com/en-us/help/api#deposit-status
       if code is nil
@@ -1210,7 +1210,7 @@ module Ccxt
       return self.parse_transactions_by_type('deposit', response['result'], code, since, limit)
     end
 
-    def fetch_withdrawals(code = nil, since = nil, limit = nil, params={})
+    def fetch_withdrawals(code = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       # https://www.kraken.com/en-us/help/api#withdraw-status
       if code is nil
@@ -1236,7 +1236,7 @@ module Ccxt
       return self.parse_transactions_by_type('withdrawal', response['result'], code, since, limit)
     end
 
-    def create_deposit_address(code, params={})
+    def create_deposit_address(code, params = {})
       request = {
         'new' => 'true',
       }
@@ -1250,7 +1250,7 @@ module Ccxt
       }
     end
 
-    def fetch_deposit_address(code, params={})
+    def fetch_deposit_address(code, params = {})
       self.load_markets()
       currency = self.currency(code)
       # eslint-disable-next-line quotes
@@ -1283,7 +1283,7 @@ module Ccxt
       }
     end
 
-    def withdraw(code, amount, address, tag = nil, params={})
+    def withdraw(code, amount, address, tag = nil, params = {})
       self.check_address(address)
       if 'key' in params
         self.load_markets()
@@ -1300,7 +1300,7 @@ module Ccxt
       raise ExchangeError(self.id + " withdraw requires a 'key' parameter(withdrawal key name, as set up on your account)")
     end
 
-    def sign(path, api = 'public', method = 'GET', params={}, headers = nil, body = nil)
+    def sign(path, api = 'public', method = 'GET', params = {}, headers = nil, body = nil)
       url = '/' + self.version + '/' + api + '/' + path
       if api == 'public'
         if params
