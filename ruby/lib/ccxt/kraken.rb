@@ -23,65 +23,65 @@ module Ccxt
 
     def describe()
       return self.deep_extend(super(kraken, self).describe(), {
-        'id': 'kraken',
-        'name': 'Kraken',
-        'countries': ['US'],
-        'version': '0',
-        'rateLimit': 3000,
-        'certified': True,
-        'has': {
-          'createDepositAddress': True,
-          'fetchDepositAddress': True,
-          'fetchTradingFee': True,
-          'fetchTradingFees': True,
-          'CORS': False,
-          'fetchCurrencies': True,
-          'fetchTickers': True,
-          'fetchOHLCV': True,
-          'fetchOrder': True,
-          'fetchOpenOrders': True,
-          'fetchClosedOrders': True,
-          'fetchMyTrades': True,
-          'fetchWithdrawals': True,
-          'fetchDeposits': True,
-          'withdraw': True,
-          'fetchLedgerEntry': True,
-          'fetchLedger': True,
+        'id' => 'kraken',
+        'name' => 'Kraken',
+        'countries' => ['US'],
+        'version' => '0',
+        'rateLimit' => 3000,
+        'certified' => True,
+        'has' => {
+          'createDepositAddress' => True,
+          'fetchDepositAddress' => True,
+          'fetchTradingFee' => True,
+          'fetchTradingFees' => True,
+          'CORS' => False,
+          'fetchCurrencies' => True,
+          'fetchTickers' => True,
+          'fetchOHLCV' => True,
+          'fetchOrder' => True,
+          'fetchOpenOrders' => True,
+          'fetchClosedOrders' => True,
+          'fetchMyTrades' => True,
+          'fetchWithdrawals' => True,
+          'fetchDeposits' => True,
+          'withdraw' => True,
+          'fetchLedgerEntry' => True,
+          'fetchLedger' => True,
         },
-        'marketsByAltname': {},
-        'timeframes': {
-          '1m': '1',
-          '5m': '5',
-          '15m': '15',
-          '30m': '30',
-          '1h': '60',
-          '4h': '240',
-          '1d': '1440',
-          '1w': '10080',
-          '2w': '21600',
+        'marketsByAltname' => {},
+        'timeframes' => {
+          '1m' => '1',
+          '5m' => '5',
+          '15m' => '15',
+          '30m' => '30',
+          '1h' => '60',
+          '4h' => '240',
+          '1d' => '1440',
+          '1w' => '10080',
+          '2w' => '21600',
         },
-        'urls': {
-          'logo': 'https://user-images.githubusercontent.com/1294454/27766599-22709304-5ede-11e7-9de1-9f33732e1509.jpg',
-          'api': {
-            'public': 'https://api.kraken.com',
-            'private': 'https://api.kraken.com',
-            'zendesk': 'https://support.kraken.com/hc/en-us/articles/',
+        'urls' => {
+          'logo' => 'https://user-images.githubusercontent.com/1294454/27766599-22709304-5ede-11e7-9de1-9f33732e1509.jpg',
+          'api' => {
+            'public' => 'https://api.kraken.com',
+            'private' => 'https://api.kraken.com',
+            'zendesk' => 'https://support.kraken.com/hc/en-us/articles/',
           },
-          'www': 'https://www.kraken.com',
-          'doc': [
+          'www' => 'https://www.kraken.com',
+          'doc' => [
             'https://www.kraken.com/en-us/help/api',
             'https://github.com/nothingisdead/npm-kraken-api',
           ],
-          'fees': 'https://www.kraken.com/en-us/help/fees',
+          'fees' => 'https://www.kraken.com/en-us/help/fees',
         },
-        'fees': {
-          'trading': {
-            'tierBased': True,
-            'percentage': True,
-            'taker': 0.26 / 100,
-            'maker': 0.16 / 100,
-            'tiers': {
-              'taker': [
+        'fees' => {
+          'trading' => {
+            'tierBased' => True,
+            'percentage' => True,
+            'taker' => 0.26 / 100,
+            'maker' => 0.16 / 100,
+            'tiers' => {
+              'taker' => [
                 [0, 0.0026],
                 [50000, 0.0024],
                 [100000, 0.0022],
@@ -92,7 +92,7 @@ module Ccxt
                 [5000000, 0.0012],
                 [10000000, 0.0001],
               ],
-              'maker': [
+              'maker' => [
                 [0, 0.0016],
                 [50000, 0.0014],
                 [100000, 0.0012],
@@ -107,60 +107,60 @@ module Ccxt
           },
           # self is a bad way of hardcoding fees that change on daily basis
           # hardcoding is now considered obsolete, we will remove all of it eventually
-          'funding': {
-            'tierBased': False,
-            'percentage': False,
-            'withdraw': {
-              'BTC': 0.001,
-              'ETH': 0.005,
-              'XRP': 0.02,
-              'XLM': 0.00002,
-              'LTC': 0.02,
-              'DOGE': 2,
-              'ZEC': 0.00010,
-              'ICN': 0.02,
-              'REP': 0.01,
-              'ETC': 0.005,
-              'MLN': 0.003,
-              'XMR': 0.05,
-              'DASH': 0.005,
-              'GNO': 0.01,
-              'EOS': 0.5,
-              'BCH': 0.001,
-              'XTZ': 0.05,
-              'USD': 5,  # if domestic wire
-              'EUR': 5,  # if domestic wire
-              'CAD': 10,  # CAD EFT Withdrawal
-              'JPY': 300,  # if domestic wire
+          'funding' => {
+            'tierBased' => False,
+            'percentage' => False,
+            'withdraw' => {
+              'BTC' => 0.001,
+              'ETH' => 0.005,
+              'XRP' => 0.02,
+              'XLM' => 0.00002,
+              'LTC' => 0.02,
+              'DOGE' => 2,
+              'ZEC' => 0.00010,
+              'ICN' => 0.02,
+              'REP' => 0.01,
+              'ETC' => 0.005,
+              'MLN' => 0.003,
+              'XMR' => 0.05,
+              'DASH' => 0.005,
+              'GNO' => 0.01,
+              'EOS' => 0.5,
+              'BCH' => 0.001,
+              'XTZ' => 0.05,
+              'USD' => 5,  # if domestic wire
+              'EUR' => 5,  # if domestic wire
+              'CAD' => 10,  # CAD EFT Withdrawal
+              'JPY' => 300,  # if domestic wire
             },
-            'deposit': {
-              'BTC': 0,
-              'ETH': 0,
-              'XRP': 0,
-              'XLM': 0,
-              'LTC': 0,
-              'DOGE': 0,
-              'ZEC': 0,
-              'ICN': 0,
-              'REP': 0,
-              'ETC': 0,
-              'MLN': 0,
-              'XMR': 0,
-              'DASH': 0,
-              'GNO': 0,
-              'EOS': 0,
-              'BCH': 0,
-              'XTZ': 0.05,
-              'USD': 5,  # if domestic wire
-              'EUR': 0,  # free deposit if EUR SEPA Deposit
-              'CAD': 5,  # if domestic wire
-              'JPY': 0,  # Domestic Deposit(Free, ¥5,000 deposit minimum)
+            'deposit' => {
+              'BTC' => 0,
+              'ETH' => 0,
+              'XRP' => 0,
+              'XLM' => 0,
+              'LTC' => 0,
+              'DOGE' => 0,
+              'ZEC' => 0,
+              'ICN' => 0,
+              'REP' => 0,
+              'ETC' => 0,
+              'MLN' => 0,
+              'XMR' => 0,
+              'DASH' => 0,
+              'GNO' => 0,
+              'EOS' => 0,
+              'BCH' => 0,
+              'XTZ' => 0.05,
+              'USD' => 5,  # if domestic wire
+              'EUR' => 0,  # free deposit if EUR SEPA Deposit
+              'CAD' => 5,  # if domestic wire
+              'JPY' => 0,  # Domestic Deposit(Free, ¥5,000 deposit minimum)
             },
           },
         },
-        'api': {
-          'zendesk': {
-            'get': [
+        'api' => {
+          'zendesk' => {
+            'get' => [
               # we should really refrain from putting fixed fee numbers and stop hardcoding
               # we will be using their web APIs to scrape all numbers from these articles
               '205893708-What-is-the-minimum-order-size-',
@@ -168,8 +168,8 @@ module Ccxt
               '201893608-What-are-the-withdrawal-fees-',
             ],
           },
-          'public': {
-            'get': [
+          'public' => {
+            'get' => [
               'Assets',
               'AssetPairs',
               'Depth',
@@ -180,8 +180,8 @@ module Ccxt
               'Trades',
             ],
           },
-          'private': {
-            'post': [
+          'private' => {
+            'post' => [
               'AddOrder',
               'AddExport',
               'Balance',
@@ -209,29 +209,29 @@ module Ccxt
             ],
           },
         },
-        'commonCurrencies': {
-          'XDG': 'DOGE',
+        'commonCurrencies' => {
+          'XDG' => 'DOGE',
         },
-        'options': {
-          'cacheDepositMethodsOnFetchDepositAddress': True,  # will issue up to two calls in fetchDepositAddress
-          'depositMethods': {},
-          'delistedMarketsById': {},
+        'options' => {
+          'cacheDepositMethodsOnFetchDepositAddress' => True,  # will issue up to two calls in fetchDepositAddress
+          'depositMethods' => {},
+          'delistedMarketsById' => {},
           # cannot withdraw/deposit these
-          'inactiveCurrencies': ['CAD', 'USD', 'JPY', 'GBP'],
+          'inactiveCurrencies' => ['CAD', 'USD', 'JPY', 'GBP'],
         },
-        'exceptions': {
-          'EAPI:Invalid key': AuthenticationError,
-          'EFunding:Unknown withdraw key': ExchangeError,
-          'EFunding:Invalid amount': InsufficientFunds,
-          'EService:Unavailable': ExchangeNotAvailable,
-          'EDatabase:Internal error': ExchangeNotAvailable,
-          'EService:Busy': ExchangeNotAvailable,
-          'EQuery:Unknown asset': ExchangeError,
-          'EAPI:Rate limit exceeded': DDoSProtection,
-          'EOrder:Rate limit exceeded': DDoSProtection,
-          'EGeneral:Internal error': ExchangeNotAvailable,
-          'EGeneral:Temporary lockout': DDoSProtection,
-          'EGeneral:Permission denied': PermissionDenied,
+        'exceptions' => {
+          'EAPI:Invalid key' => AuthenticationError,
+          'EFunding:Unknown withdraw key' => ExchangeError,
+          'EFunding:Invalid amount' => InsufficientFunds,
+          'EService:Unavailable' => ExchangeNotAvailable,
+          'EDatabase:Internal error' => ExchangeNotAvailable,
+          'EService:Busy' => ExchangeNotAvailable,
+          'EQuery:Unknown asset' => ExchangeError,
+          'EAPI:Rate limit exceeded' => DDoSProtection,
+          'EOrder:Rate limit exceeded' => DDoSProtection,
+          'EGeneral:Internal error' => ExchangeNotAvailable,
+          'EGeneral:Temporary lockout' => DDoSProtection,
+          'EGeneral:Permission denied' => PermissionDenied,
         },
       })
     end
@@ -292,38 +292,38 @@ module Ccxt
         if 'fees_maker' in market:
           maker = float(market['fees_maker'][0][1]) / 100
         precision = {
-          'amount': market['lot_decimals'],
-          'price': market['pair_decimals'],
+          'amount' => market['lot_decimals'],
+          'price' => market['pair_decimals'],
         }
         minAmount = math.pow(10, -precision['amount'])
         if base in limits:
           minAmount = limits[base]
         result.append({
-          'id': id,
-          'symbol': symbol,
-          'base': base,
-          'quote': quote,
-          'baseId': baseId,
-          'quoteId': quoteId,
-          'darkpool': darkpool,
-          'info': market,
-          'altname': market['altname'],
-          'maker': maker,
-          'taker': float(market['fees'][0][1]) / 100,
-          'active': True,
-          'precision': precision,
-          'limits': {
-            'amount': {
-              'min': minAmount,
-              'max': math.pow(10, precision['amount']),
+          'id' => id,
+          'symbol' => symbol,
+          'base' => base,
+          'quote' => quote,
+          'baseId' => baseId,
+          'quoteId' => quoteId,
+          'darkpool' => darkpool,
+          'info' => market,
+          'altname' => market['altname'],
+          'maker' => maker,
+          'taker' => float(market['fees'][0][1]) / 100,
+          'active' => True,
+          'precision' => precision,
+          'limits' => {
+            'amount' => {
+              'min' => minAmount,
+              'max' => math.pow(10, precision['amount']),
             },
-            'price': {
-              'min': math.pow(10, -precision['price']),
-              'max': None,
+            'price' => {
+              'min' => math.pow(10, -precision['price']),
+              'max' => None,
             },
-            'cost': {
-              'min': 0,
-              'max': None,
+            'cost' => {
+              'min' => 0,
+              'max' => None,
             },
           },
         })
@@ -334,22 +334,22 @@ module Ccxt
 
     def append_inactive_markets(result)
       # result should be an array to append to
-      precision = {'amount': 8, 'price': 8}
-      costLimits = {'min': 0, 'max': None}
-      priceLimits = {'min': math.pow(10, -precision['price']), 'max': None}
-      amountLimits = {'min': math.pow(10, -precision['amount']), 'max': math.pow(10, precision['amount'])}
-      limits = {'amount': amountLimits, 'price': priceLimits, 'cost': costLimits}
+      precision = {'amount' => 8, 'price': 8}
+      costLimits = {'min' => 0, 'max': None}
+      priceLimits = {'min' => math.pow(10, -precision['price']), 'max': None}
+      amountLimits = {'min' => math.pow(10, -precision['amount']), 'max': math.pow(10, precision['amount'])}
+      limits = {'amount' => amountLimits, 'price': priceLimits, 'cost': costLimits}
       defaults = {
-        'darkpool': False,
-        'info': None,
-        'maker': None,
-        'taker': None,
-        'active': False,
-        'precision': precision,
-        'limits': limits,
+        'darkpool' => False,
+        'info' => None,
+        'maker' => None,
+        'taker' => None,
+        'active' => False,
+        'precision' => precision,
+        'limits' => limits,
       }
       markets = [
-        # {'id': 'XXLMZEUR', 'symbol': 'XLM/EUR', 'base': 'XLM', 'quote': 'EUR', 'altname': 'XLMEUR'},
+        # {'id' => 'XXLMZEUR', 'symbol': 'XLM/EUR', 'base': 'XLM', 'quote': 'EUR', 'altname': 'XLMEUR'},
       ]
       for i in range(0, len(markets)):
         result.append(self.extend(defaults, markets[i]))
@@ -383,29 +383,29 @@ module Ccxt
         # assumes all currencies are active except those listed above
         active = not self.in_array(code, self.options['inactiveCurrencies'])
         result[code] = {
-          'id': id,
-          'code': code,
-          'info': currency,
-          'name': code,
-          'active': active,
-          'fee': None,
-          'precision': precision,
-          'limits': {
-            'amount': {
-              'min': math.pow(10, -precision),
-              'max': math.pow(10, precision),
+          'id' => id,
+          'code' => code,
+          'info' => currency,
+          'name' => code,
+          'active' => active,
+          'fee' => None,
+          'precision' => precision,
+          'limits' => {
+            'amount' => {
+              'min' => math.pow(10, -precision),
+              'max' => math.pow(10, precision),
             },
-            'price': {
-              'min': math.pow(10, -precision),
-              'max': math.pow(10, precision),
+            'price' => {
+              'min' => math.pow(10, -precision),
+              'max' => math.pow(10, precision),
             },
-            'cost': {
-              'min': None,
-              'max': None,
+            'cost' => {
+              'min' => None,
+              'max' => None,
             },
-            'withdraw': {
-              'min': None,
-              'max': math.pow(10, precision),
+            'withdraw' => {
+              'min' => None,
+              'max' => math.pow(10, precision),
             },
           },
         }
@@ -427,9 +427,9 @@ module Ccxt
         if tradedVolume >= tiers['maker'][i][0]:
           maker = tiers['maker'][i][1]
       return {
-        'info': response,
-        'maker': maker,
-        'taker': taker,
+        'info' => response,
+        'maker' => maker,
+        'taker' => taker,
       }
     end
 
@@ -439,7 +439,7 @@ module Ccxt
       if market['darkpool']:
         raise ExchangeError(self.id + ' does not provide an order book for darkpool symbol ' + symbol)
       request = {
-        'pair': market['id'],
+        'pair' => market['id'],
       }
       if limit is not None:
         request['count'] = limit  # 100
@@ -460,26 +460,26 @@ module Ccxt
         quoteVolume = baseVolume * vwap
       last = float(ticker['c'][0])
       return {
-        'symbol': symbol,
-        'timestamp': timestamp,
-        'datetime': self.iso8601(timestamp),
-        'high': float(ticker['h'][1]),
-        'low': float(ticker['l'][1]),
-        'bid': float(ticker['b'][0]),
-        'bidVolume': None,
-        'ask': float(ticker['a'][0]),
-        'askVolume': None,
-        'vwap': vwap,
-        'open': self.safe_float(ticker, 'o'),
-        'close': last,
-        'last': last,
-        'previousClose': None,
-        'change': None,
-        'percentage': None,
-        'average': None,
-        'baseVolume': baseVolume,
-        'quoteVolume': quoteVolume,
-        'info': ticker,
+        'symbol' => symbol,
+        'timestamp' => timestamp,
+        'datetime' => self.iso8601(timestamp),
+        'high' => float(ticker['h'][1]),
+        'low' => float(ticker['l'][1]),
+        'bid' => float(ticker['b'][0]),
+        'bidVolume' => None,
+        'ask' => float(ticker['a'][0]),
+        'askVolume' => None,
+        'vwap' => vwap,
+        'open' => self.safe_float(ticker, 'o'),
+        'close' => last,
+        'last' => last,
+        'previousClose' => None,
+        'change' => None,
+        'percentage' => None,
+        'average' => None,
+        'baseVolume' => baseVolume,
+        'quoteVolume' => quoteVolume,
+        'info' => ticker,
       }
     end
 
@@ -494,7 +494,7 @@ module Ccxt
             pairs.append(market['id'])
       filter = ','.join(pairs)
       response = self.publicGetTicker(self.extend({
-        'pair': filter,
+        'pair' => filter,
       }, params))
       tickers = response['result']
       ids = list(tickers.keys())
@@ -515,7 +515,7 @@ module Ccxt
         raise ExchangeError(self.id + ' does not provide a ticker for darkpool symbol ' + symbol)
       market = self.market(symbol)
       response = self.publicGetTicker(self.extend({
-        'pair': market['id'],
+        'pair' => market['id'],
       }, params))
       ticker = response['result'][market['id']]
       return self.parse_ticker(ticker, market)
@@ -536,8 +536,8 @@ module Ccxt
       self.load_markets()
       market = self.market(symbol)
       request = {
-        'pair': market['id'],
-        'interval': self.timeframes[timeframe],
+        'pair' => market['id'],
+        'interval' => self.timeframes[timeframe],
       }
       if since is not None:
         request['since'] = int((since - 1) / 1000)
@@ -548,11 +548,11 @@ module Ccxt
 
     def parse_ledger_entry_type(type)
       types = {
-        'trade': 'trade',
-        'withdrawal': 'transaction',
-        'deposit': 'transaction',
-        'transfer': 'transfer',
-        'margin': 'margin',
+        'trade' => 'trade',
+        'withdrawal' => 'transaction',
+        'deposit' => 'transaction',
+        'transfer' => 'transfer',
+        'margin' => 'margin',
       }
       return self.safe_string(types, type, type)
     end
@@ -586,26 +586,26 @@ module Ccxt
         timestamp = int(time * 1000)
         datetime = self.iso8601(timestamp)
       fee = {
-        'cost': self.safe_float(item, 'fee'),
-        'currency': code,
+        'cost' => self.safe_float(item, 'fee'),
+        'currency' => code,
       }
       before = None
       after = self.safe_float(item, 'balance')
       return {
-        'info': item,
-        'id': id,
-        'direction': direction,
-        'account': account,
-        'referenceId': referenceId,
-        'referenceAccount': referenceAccount,
-        'type': type,
-        'currency': code,
-        'amount': amount,
-        'before': before,
-        'after': after,
-        'timestamp': timestamp,
-        'datetime': datetime,
-        'fee': fee,
+        'info' => item,
+        'id' => id,
+        'direction' => direction,
+        'account' => account,
+        'referenceId' => referenceId,
+        'referenceAccount' => referenceAccount,
+        'type' => type,
+        'currency' => code,
+        'amount' => amount,
+        'before' => before,
+        'after' => after,
+        'timestamp' => timestamp,
+        'datetime' => datetime,
+        'fee' => fee,
       }
     end
 
@@ -646,7 +646,7 @@ module Ccxt
       self.load_markets()
       ids = ','.join(ids)
       request = self.extend({
-        'id': ids,
+        'id' => ids,
       }, params)
       response = self.privatePostQueryLedgers(request)
       # { error: [],
@@ -705,8 +705,8 @@ module Ccxt
           if market:
             currency = market['quote']
           fee = {
-            'cost': self.safe_float(trade, 'fee'),
-            'currency': currency,
+            'cost' => self.safe_float(trade, 'fee'),
+            'currency' => currency,
           }
       else:
         timestamp = int(trade[2] * 1000)
@@ -718,18 +718,18 @@ module Ccxt
         if tradeLength > 6:
           id = trade[6]  # artificially added as per  #1794
       return {
-        'id': id,
-        'order': order,
-        'info': trade,
-        'timestamp': timestamp,
-        'datetime': self.iso8601(timestamp),
-        'symbol': symbol,
-        'type': type,
-        'side': side,
-        'price': price,
-        'amount': amount,
-        'cost': price * amount,
-        'fee': fee,
+        'id' => id,
+        'order' => order,
+        'info' => trade,
+        'timestamp' => timestamp,
+        'datetime' => self.iso8601(timestamp),
+        'symbol' => symbol,
+        'type' => type,
+        'side' => side,
+        'price' => price,
+        'amount' => amount,
+        'cost' => price * amount,
+        'fee' => fee,
       }
     end
 
@@ -738,7 +738,7 @@ module Ccxt
       market = self.market(symbol)
       id = market['id']
       response = self.publicGetTrades(self.extend({
-        'pair': id,
+        'pair' => id,
       }, params))
       #
       #     {
@@ -769,7 +769,7 @@ module Ccxt
       balances = self.safe_value(response, 'result')
       if balances is None:
         raise ExchangeNotAvailable(self.id + ' fetchBalance failed due to a malformed response ' + self.json(response))
-      result = {'info': balances}
+      result = {'info' => balances}
       currencies = list(balances.keys())
       for c in range(0, len(currencies)):
         currency = currencies[c]
@@ -785,9 +785,9 @@ module Ccxt
           code = self.common_currency_code(code)
         balance = float(balances[currency])
         account = {
-          'free': balance,
-          'used': 0.0,
-          'total': balance,
+          'free' => balance,
+          'used' => 0.0,
+          'total' => balance,
         }
         result[code] = account
       return self.parse_balance(result)
@@ -797,10 +797,10 @@ module Ccxt
       self.load_markets()
       market = self.market(symbol)
       order = {
-        'pair': market['id'],
-        'type': side,
-        'ordertype': type,
-        'volume': self.amount_to_precision(symbol, amount),
+        'pair' => market['id'],
+        'type' => side,
+        'ordertype' => type,
+        'volume' => self.amount_to_precision(symbol, amount),
       }
       priceIsDefined = (price is not None)
       marketOrder = (type == 'market')
@@ -815,23 +815,23 @@ module Ccxt
           length = len(id)
           id = id if (length > 1) else id[0]
       return {
-        'id': id,
-        'info': response,
-        'timestamp': None,
-        'datetime': None,
-        'lastTradeTimestamp': None,
-        'symbol': symbol,
-        'type': type,
-        'side': side,
-        'price': price,
-        'amount': amount,
-        'cost': None,
-        'average': None,
-        'filled': None,
-        'remaining': None,
-        'status': None,
-        'fee': None,
-        'trades': None,
+        'id' => id,
+        'info' => response,
+        'timestamp' => None,
+        'datetime' => None,
+        'lastTradeTimestamp' => None,
+        'symbol' => symbol,
+        'type' => type,
+        'side' => side,
+        'price' => price,
+        'amount' => amount,
+        'cost' => None,
+        'average' => None,
+        'filled' => None,
+        'remaining' => None,
+        'status' => None,
+        'fee' => None,
+        'trades' => None,
       }
     end
 
@@ -875,11 +875,11 @@ module Ccxt
       quote = self.common_currency_code(quote)
       symbol = base + '/' + quote
       market = {
-        'symbol': symbol,
-        'base': base,
-        'quote': quote,
-        'baseId': baseId,
-        'quoteId': quoteId,
+        'symbol' => symbol,
+        'base' => base,
+        'quote' => quote,
+        'baseId' => baseId,
+        'quoteId' => quoteId,
       }
       self.options['delistedMarketsById'][id] = market
       return market
@@ -887,11 +887,11 @@ module Ccxt
 
     def parse_order_status(status)
       statuses = {
-        'pending': 'open',  # order pending book entry
-        'open': 'open',
-        'closed': 'closed',
-        'canceled': 'canceled',
-        'expired': 'expired',
+        'pending' => 'open',  # order pending book entry
+        'open' => 'open',
+        'closed' => 'closed',
+        'canceled' => 'canceled',
+        'expired' => 'expired',
       }
       return self.safe_string(statuses, status, status)
     end
@@ -926,8 +926,8 @@ module Ccxt
           flags = order['oflags']
           feeCost = self.safe_float(order, 'fee')
           fee = {
-            'cost': feeCost,
-            'rate': None,
+            'cost' => feeCost,
+            'rate' => None,
           }
           if flags.find('fciq') >= 0:
             fee['currency'] = market['quote']
@@ -935,23 +935,23 @@ module Ccxt
             fee['currency'] = market['base']
       status = self.parse_order_status(self.safe_string(order, 'status'))
       return {
-        'id': order['id'],
-        'info': order,
-        'timestamp': timestamp,
-        'datetime': self.iso8601(timestamp),
-        'lastTradeTimestamp': None,
-        'status': status,
-        'symbol': symbol,
-        'type': type,
-        'side': side,
-        'price': price,
-        'cost': cost,
-        'amount': amount,
-        'filled': filled,
-        'average': average,
-        'remaining': remaining,
-        'fee': fee,
-        # 'trades': self.parse_trades(order['trades'], market),
+        'id' => order['id'],
+        'info' => order,
+        'timestamp' => timestamp,
+        'datetime' => self.iso8601(timestamp),
+        'lastTradeTimestamp' => None,
+        'status' => status,
+        'symbol' => symbol,
+        'type' => type,
+        'side' => side,
+        'price' => price,
+        'cost' => cost,
+        'amount' => amount,
+        'filled' => filled,
+        'average' => average,
+        'remaining' => remaining,
+        'fee' => fee,
+        # 'trades' => self.parse_trades(order['trades'], market),
       }
     end
 
@@ -960,7 +960,7 @@ module Ccxt
       ids = list(orders.keys())
       for i in range(0, len(ids)):
         id = ids[i]
-        order = self.extend({'id': id}, orders[id])
+        order = self.extend({'id' => id}, orders[id])
         result.append(self.parse_order(order, market))
       return self.filter_by_since_limit(result, since, limit)
     end
@@ -968,20 +968,20 @@ module Ccxt
     def fetch_order(id, symbol = None, params={})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
-        'trades': True,  # whether or not to include trades in output(optional, default False)
-        'txid': id,  # do not comma separate a list of ids - use fetchOrdersByIds instead
-        # 'userref': 'optional',  # restrict results to given user reference id(optional)
+        'trades' => True,  # whether or not to include trades in output(optional, default False)
+        'txid' => id,  # do not comma separate a list of ids - use fetchOrdersByIds instead
+        # 'userref' => 'optional',  # restrict results to given user reference id(optional)
       }, params))
       orders = response['result']
-      order = self.parse_order(self.extend({'id': id}, orders[id]))
-      return self.extend({'info': response}, order)
+      order = self.parse_order(self.extend({'id' => id}, orders[id]))
+      return self.extend({'info' => response}, order)
     end
 
     def fetch_orders_by_ids(ids, symbol = None, params={})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
-        'trades': True,  # whether or not to include trades in output(optional, default False)
-        'txid': ','.join(ids),  # comma delimited list of transaction ids to query info about(20 maximum)
+        'trades' => True,  # whether or not to include trades in output(optional, default False)
+        'txid' => ','.join(ids),  # comma delimited list of transaction ids to query info about(20 maximum)
       }, params))
       result = self.safe_value(response, 'result', {})
       orders = []
@@ -989,7 +989,7 @@ module Ccxt
       for i in range(0, len(orderIds)):
         id = orderIds[i]
         item = result[id]
-        order = self.parse_order(self.extend({'id': id}, item))
+        order = self.parse_order(self.extend({'id' => id}, item))
         orders.append(order)
       return orders
     end
@@ -997,10 +997,10 @@ module Ccxt
     def fetch_my_trades(symbol = None, since = None, limit = None, params={})
       self.load_markets()
       request = {
-        # 'type': 'all',  # any position, closed position, closing position, no position
-        # 'trades': False,  # whether or not to include trades related to position in output
-        # 'start': 1234567890,  # starting unix timestamp or trade tx id of results(exclusive)
-        # 'end': 1234567890,  # ending unix timestamp or trade tx id of results(inclusive)
+        # 'type' => 'all',  # any position, closed position, closing position, no position
+        # 'trades' => False,  # whether or not to include trades related to position in output
+        # 'start' => 1234567890,  # starting unix timestamp or trade tx id of results(exclusive)
+        # 'end' => 1234567890,  # ending unix timestamp or trade tx id of results(inclusive)
         # 'ofs' = result offset
       }
       if since is not None:
@@ -1046,7 +1046,7 @@ module Ccxt
       response = None
       try:
         response = self.privatePostCancelOrder(self.extend({
-          'txid': id,
+          'txid' => id,
         }, params))
       except Exception as e:
         if self.last_http_response:
@@ -1084,7 +1084,7 @@ module Ccxt
       self.load_markets()
       currency = self.currency(code)
       response = self.privatePostDepositMethods(self.extend({
-        'asset': currency['id'],
+        'asset' => currency['id'],
       }, params))
       return response['result']
     end
@@ -1092,12 +1092,12 @@ module Ccxt
     def parse_transaction_status(status)
       # IFEX transaction states
       statuses = {
-        'Initial': 'pending',
-        'Pending': 'pending',
-        'Success': 'ok',
-        'Settled': 'ok',
-        'Failure': 'failed',
-        'Partial': 'ok',
+        'Initial' => 'pending',
+        'Pending' => 'pending',
+        'Success' => 'ok',
+        'Settled' => 'ok',
+        'Failure' => 'failed',
+        'Partial' => 'ok',
       }
       return self.safe_string(statuses, status, status)
     end
@@ -1151,21 +1151,21 @@ module Ccxt
         if type == 'deposit':
           feeCost = 0
       return {
-        'info': transaction,
-        'id': id,
-        'currency': code,
-        'amount': amount,
-        'address': address,
-        'tag': None,
-        'status': status,
-        'type': type,
-        'updated': None,
-        'txid': txid,
-        'timestamp': timestamp,
-        'datetime': self.iso8601(timestamp),
-        'fee': {
-          'currency': code,
-          'cost': feeCost,
+        'info' => transaction,
+        'id' => id,
+        'currency' => code,
+        'amount' => amount,
+        'address' => address,
+        'tag' => None,
+        'status' => status,
+        'type' => type,
+        'updated' => None,
+        'txid' => txid,
+        'timestamp' => timestamp,
+        'datetime' => self.iso8601(timestamp),
+        'fee' => {
+          'currency' => code,
+          'cost' => feeCost,
         },
       }
     end
@@ -1174,7 +1174,7 @@ module Ccxt
       result = []
       for i in range(0, len(transactions)):
         transaction = self.parse_transaction(self.extend({
-          'type': type,
+          'type' => type,
         }, transactions[i]))
         result.append(transaction)
       return self.filterByCurrencySinceLimit(result, code, since, limit)
@@ -1187,7 +1187,7 @@ module Ccxt
         raise ArgumentsRequired(self.id + ' fetchDeposits requires a currency code argument')
       currency = self.currency(code)
       request = {
-        'asset': currency['id'],
+        'asset' => currency['id'],
       }
       response = self.privatePostDepositStatus(self.extend(request, params))
       #
@@ -1213,7 +1213,7 @@ module Ccxt
         raise ArgumentsRequired(self.id + ' fetchWithdrawals requires a currency code argument')
       currency = self.currency(code)
       request = {
-        'asset': currency['id'],
+        'asset' => currency['id'],
       }
       response = self.privatePostWithdrawStatus(self.extend(request, params))
       #
@@ -1234,15 +1234,15 @@ module Ccxt
 
     def create_deposit_address(code, params={})
       request = {
-        'new': 'true',
+        'new' => 'true',
       }
       response = self.fetch_deposit_address(code, self.extend(request, params))
       address = self.safe_string(response, 'address')
       self.check_address(address)
       return {
-        'currency': code,
-        'address': address,
-        'info': response,
+        'currency' => code,
+        'address' => address,
+        'info' => response,
       }
     end
 
@@ -1260,8 +1260,8 @@ module Ccxt
         else:
           raise ExchangeError(self.id + ' fetchDepositAddress() requires an extra `method` parameter. Use fetchDepositMethods("' + code + '") to get a list of available deposit methods or enable the exchange property .options["cacheDepositMethodsOnFetchDepositAddress"] = True')
       request = {
-        'asset': currency['id'],
-        'method': method,
+        'asset' => currency['id'],
+        'method' => method,
       }
       response = self.privatePostDepositAddresses(self.extend(request, params))  # overwrite methods
       result = response['result']
@@ -1272,10 +1272,10 @@ module Ccxt
       tag = self.safe_string_2(result[0], 'tag', 'memo')
       self.check_address(address)
       return {
-        'currency': code,
-        'address': address,
-        'tag': tag,
-        'info': response,
+        'currency' => code,
+        'address' => address,
+        'tag' => tag,
+        'info' => response,
       }
     end
 
@@ -1285,13 +1285,13 @@ module Ccxt
         self.load_markets()
         currency = self.currency(code)
         response = self.privatePostWithdraw(self.extend({
-          'asset': currency['id'],
-          'amount': amount,
-          # 'address': address,  # they don't allow withdrawals to direct addresses
+          'asset' => currency['id'],
+          'amount' => amount,
+          # 'address' => address,  # they don't allow withdrawals to direct addresses
         }, params))
         return {
-          'info': response,
-          'id': response['result'],
+          'info' => response,
+          'id' => response['result'],
         }
       raise ExchangeError(self.id + " withdraw requires a 'key' parameter(withdrawal key name, as set up on your account)")
     end
@@ -1304,7 +1304,7 @@ module Ccxt
       elif api == 'private':
         self.check_required_credentials()
         nonce = str(self.nonce())
-        body = self.urlencode(self.extend({'nonce': nonce}, params))
+        body = self.urlencode(self.extend({'nonce' => nonce}, params))
         auth = self.encode(nonce + body)
         hash = self.hash(auth, 'sha256', 'binary')
         binary = self.encode(url)
@@ -1319,7 +1319,7 @@ module Ccxt
       else:
         url = '/' + path
       url = self.urls['api'][api] + url
-      return {'url': url, 'method': method, 'body': body, 'headers': headers}
+      return {'url' => url, 'method': method, 'body': body, 'headers': headers}
     end
 
     def nonce()
