@@ -28,25 +28,25 @@ module Ccxt
         'countries' => ['US'],
         'version' => '0',
         'rateLimit' => 3000,
-        'certified' => True,
+        'certified' => true,
         'has' => {
-          'createDepositAddress' => True,
-          'fetchDepositAddress' => True,
-          'fetchTradingFee' => True,
-          'fetchTradingFees' => True,
+          'createDepositAddress' => true,
+          'fetchDepositAddress' => true,
+          'fetchTradingFee' => true,
+          'fetchTradingFees' => true,
           'CORS' => false,
-          'fetchCurrencies' => True,
-          'fetchTickers' => True,
-          'fetchOHLCV' => True,
-          'fetchOrder' => True,
-          'fetchOpenOrders' => True,
-          'fetchClosedOrders' => True,
-          'fetchMyTrades' => True,
-          'fetchWithdrawals' => True,
-          'fetchDeposits' => True,
-          'withdraw' => True,
-          'fetchLedgerEntry' => True,
-          'fetchLedger' => True,
+          'fetchCurrencies' => true,
+          'fetchTickers' => true,
+          'fetchOHLCV' => true,
+          'fetchOrder' => true,
+          'fetchOpenOrders' => true,
+          'fetchClosedOrders' => true,
+          'fetchMyTrades' => true,
+          'fetchWithdrawals' => true,
+          'fetchDeposits' => true,
+          'withdraw' => true,
+          'fetchLedgerEntry' => true,
+          'fetchLedger' => true,
         },
         'marketsByAltname' => {},
         'timeframes' => {
@@ -76,8 +76,8 @@ module Ccxt
         },
         'fees' => {
           'trading' => {
-            'tierBased' => True,
-            'percentage' => True,
+            'tierBased' => true,
+            'percentage' => true,
             'taker' => 0.26 / 100,
             'maker' => 0.16 / 100,
             'tiers' => {
@@ -213,7 +213,7 @@ module Ccxt
           'XDG' => 'DOGE',
         },
         'options' => {
-          'cacheDepositMethodsOnFetchDepositAddress' => True,  # will issue up to two calls in fetchDepositAddress
+          'cacheDepositMethodsOnFetchDepositAddress' => true,  # will issue up to two calls in fetchDepositAddress
           'depositMethods' => {},
           'delistedMarketsById' => {},
           # cannot withdraw/deposit these
@@ -310,7 +310,7 @@ module Ccxt
           'altname' => market['altname'],
           'maker' => maker,
           'taker' => float(market['fees'][0][1]) / 100,
-          'active' => True,
+          'active' => true,
           'precision' => precision,
           'limits' => {
             'amount' => {
@@ -968,7 +968,7 @@ module Ccxt
     def fetch_order(id, symbol = nil, params={})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
-        'trades' => True,  # whether or not to include trades in output(optional, default false)
+        'trades' => true,  # whether or not to include trades in output(optional, default false)
         'txid' => id,  # do not comma separate a list of ids - use fetchOrdersByIds instead
         # 'userref' => 'optional',  # restrict results to given user reference id(optional)
       }, params))
@@ -980,7 +980,7 @@ module Ccxt
     def fetch_orders_by_ids(ids, symbol = nil, params={})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
-        'trades' => True,  # whether or not to include trades in output(optional, default false)
+        'trades' => true,  # whether or not to include trades in output(optional, default false)
         'txid' => ','.join(ids),  # comma delimited list of transaction ids to query info about(20 maximum)
       }, params))
       result = self.safe_value(response, 'result', {})
@@ -1258,7 +1258,7 @@ module Ccxt
             self.options['depositMethods'][code] = self.fetch_deposit_methods(code)
           method = self.options['depositMethods'][code][0]['method']
         else:
-          raise ExchangeError(self.id + ' fetchDepositAddress() requires an extra `method` parameter. Use fetchDepositMethods("' + code + '") to get a list of available deposit methods or enable the exchange property .options["cacheDepositMethodsOnFetchDepositAddress"] = True')
+          raise ExchangeError(self.id + ' fetchDepositAddress() requires an extra `method` parameter. Use fetchDepositMethods("' + code + '") to get a list of available deposit methods or enable the exchange property .options["cacheDepositMethodsOnFetchDepositAddress"] = true')
       request = {
         'asset' => currency['id'],
         'method' => method,
