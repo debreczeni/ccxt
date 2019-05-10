@@ -1,22 +1,22 @@
-  require 'ccxt/exchange'
+require 'ccxt/exchange'
 
-  # import base64
-  # import hashlib
-  # import math
-  # from ccxt.base.errors import ExchangeError
-  # from ccxt.base.errors import AuthenticationError
-  # from ccxt.base.errors import PermissionDenied
-  # from ccxt.base.errors import ArgumentsRequired
-  # from ccxt.base.errors import InsufficientFunds
-  # from ccxt.base.errors import InvalidAddress
-  # from ccxt.base.errors import InvalidOrder
-  # from ccxt.base.errors import OrderNotFound
-  # from ccxt.base.errors import CancelPending
-  # from ccxt.base.errors import DDoSProtection
-  # from ccxt.base.errors import ExchangeNotAvailable
-  # from ccxt.base.errors import InvalidNonce
-  # from ccxt.base.decimal_to_precision import TRUNCATE
-  # from ccxt.base.decimal_to_precision import DECIMAL_PLACES
+# import base64
+# import hashlib
+# import math
+# from ccxt.base.errors import ExchangeError
+# from ccxt.base.errors import AuthenticationError
+# from ccxt.base.errors import PermissionDenied
+# from ccxt.base.errors import ArgumentsRequired
+# from ccxt.base.errors import InsufficientFunds
+# from ccxt.base.errors import InvalidAddress
+# from ccxt.base.errors import InvalidOrder
+# from ccxt.base.errors import OrderNotFound
+# from ccxt.base.errors import CancelPending
+# from ccxt.base.errors import DDoSProtection
+# from ccxt.base.errors import ExchangeNotAvailable
+# from ccxt.base.errors import InvalidNonce
+# from ccxt.base.decimal_to_precision import TRUNCATE
+# from ccxt.base.decimal_to_precision import DECIMAL_PLACES
 
 module Ccxt
   class Kraken < Exchange
