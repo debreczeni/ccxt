@@ -275,8 +275,7 @@ module Ccxt
       limits = self.fetch_min_order_amounts()
       keys = list(markets['result'].keys())
       result = []
-      for i in range(0, len(keys)):
-        id = keys[i]
+      keys.each do |id|
         market = markets['result'][id]
         baseId = market['base']
         quoteId = market['quote']
@@ -285,16 +284,21 @@ module Ccxt
         if len(base) > 3
           if (base[0] == 'X') or (base[0] == 'Z')
             base = base[1:]
+          end
+        end
         if len(quote) > 3
           if (quote[0] == 'X') or (quote[0] == 'Z')
             quote = quote[1:]
+          end
+        end
         base = self.common_currency_code(base)
         quote = self.common_currency_code(quote)
-        darkpool = id.find('.d') >= 0
-        symbol = market['altname'] if darkpool else (base + '/' + quote)
+        darkpool = id.ends_with?('.d')
+        symbol = darkpool ? market['altname'] : (base + '/' + quote)
         maker = nil
-        if 'fees_maker' in market
+        if market['fees_maker']
           maker = float(market['fees_maker'][0][1]) / 100
+        end
         precision = {
           'amount' => market['lot_decimals'],
           'price' => market['pair_decimals'],
