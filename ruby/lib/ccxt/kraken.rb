@@ -303,9 +303,10 @@ module Ccxt
           'amount' => market['lot_decimals'],
           'price' => market['pair_decimals'],
         }
-        minAmount = math.pow(10, -precision['amount'])
-        if base in limits
+        minAmount = 10 ** -precision['amount']
+        if limits[base]
           minAmount = limits[base]
+        end
         result.append({
           'id' => id,
           'symbol' => symbol,
@@ -323,10 +324,10 @@ module Ccxt
           'limits' => {
             'amount' => {
               'min' => minAmount,
-              'max' => math.pow(10, precision['amount']),
+              'max' => 10 ** precision['amount'],
             },
             'price' => {
-              'min' => math.pow(10, -precision['price']),
+              'min' => 10 ** -precision['price'],
               'max' => nil,
             },
             'cost' => {
@@ -342,11 +343,11 @@ module Ccxt
 
     def append_inactive_markets(result)
       # result should be an array to append to
-      precision = {'amount' => 8, 'price': 8}
-      costLimits = {'min' => 0, 'max': nil}
-      priceLimits = {'min' => math.pow(10, -precision['price']), 'max': nil}
-      amountLimits = {'min' => math.pow(10, -precision['amount']), 'max': math.pow(10, precision['amount'])}
-      limits = {'amount' => amountLimits, 'price': priceLimits, 'cost': costLimits}
+      precision = {'amount' => 8, 'price' => 8}
+      costLimits = {'min' => 0, 'max' => nil}
+      priceLimits = {'min' => 10 ** -precision['price'], 'max' => nil}
+      amountLimits = {'min' => 10 ** -precision['amount'], 'max' => 10 ** precision['amount']}
+      limits = {'amount' => amountLimits, 'price' => priceLimits, 'cost' => costLimits}
       defaults = {
         'darkpool' => false,
         'info' => nil,
@@ -357,7 +358,7 @@ module Ccxt
         'limits' => limits,
       }
       markets = [
-        # {'id' => 'XXLMZEUR', 'symbol': 'XLM/EUR', 'base': 'XLM', 'quote': 'EUR', 'altname': 'XLMEUR'},
+        # {'id' => 'XXLMZEUR', 'symbol' => 'XLM/EUR', 'base' => 'XLM', 'quote' => 'EUR', 'altname' => 'XLMEUR'},
       ]
       for i in range(0, len(markets)):
         result.append(self.extend(defaults, markets[i]))
@@ -400,12 +401,12 @@ module Ccxt
           'precision' => precision,
           'limits' => {
             'amount' => {
-              'min' => math.pow(10, -precision),
-              'max' => math.pow(10, precision),
+              'min' => 10 ** -precision,
+              'max' => 10 ** precision,
             },
             'price' => {
-              'min' => math.pow(10, -precision),
-              'max' => math.pow(10, precision),
+              'min' => 10 ** -precision,
+              'max' => 10 ** precision,
             },
             'cost' => {
               'min' => nil,
@@ -413,7 +414,7 @@ module Ccxt
             },
             'withdraw' => {
               'min' => nil,
-              'max' => math.pow(10, precision),
+              'max' => 10 ** precision,
             },
           },
         }
@@ -566,7 +567,7 @@ module Ccxt
     end
 
     def parse_ledger_entry(item, currency = nil)
-      # {'LTFK7F-N2CUX-PNY4SX': {  refid: "TSJTGT-DT7WN-GPPQMJ",
+      # {'LTFK7F-N2CUX-PNY4SX' => {  refid: "TSJTGT-DT7WN-GPPQMJ",
       #                               time:  1520102320.555,
       #                               type: "trade",
       #                             aclass: "currency",
@@ -629,7 +630,7 @@ module Ccxt
         request['start'] = int(since / 1000)
       response = self.privatePostLedgers(self.extend(request, params))
       # { error: [],
-      #   result: {ledger: {'LPUAIB-TS774-UKHP7X': {  refid: "A2B4HBV-L4MDIE-JU4N3N",
+      #   result: {ledger: {'LPUAIB-TS774-UKHP7X' => {  refid: "A2B4HBV-L4MDIE-JU4N3N",
       #                                                   time:  1520103488.314,
       #                                                   type: "withdrawal",
       #                                                 aclass: "currency",
@@ -658,7 +659,7 @@ module Ccxt
       }, params)
       response = self.privatePostQueryLedgers(request)
       # { error: [],
-      #   result: {'LPUAIB-TS774-UKHP7X': {  refid: "A2B4HBV-L4MDIE-JU4N3N",
+      #   result: {'LPUAIB-TS774-UKHP7X' => {  refid: "A2B4HBV-L4MDIE-JU4N3N",
       #                                         time:  1520103488.314,
       #                                         type: "withdrawal",
       #                                       aclass: "currency",
@@ -1320,14 +1321,14 @@ module Ccxt
         secret = base64.b64decode(self.secret)
         signature = self.hmac(binhash, secret, hashlib.sha512, 'base64')
         headers = {
-          'API-Key': self.apiKey,
-          'API-Sign': self.decode(signature),
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'API-Key' => self.apiKey,
+          'API-Sign' => self.decode(signature),
+          'Content-Type' => 'application/x-www-form-urlencoded',
         }
       else:
         url = '/' + path
       url = self.urls['api'][api] + url
-      return {'url' => url, 'method': method, 'body': body, 'headers': headers}
+      return {'url' => url, 'method' => method, 'body' => body, 'headers' => headers}
     end
 
     def nonce()
