@@ -1350,3 +1350,5 @@ module Ccxt
                   raise self.exceptions[response['error'][i]](message)
               raise ExchangeError(message)
     end
+  end
+end
