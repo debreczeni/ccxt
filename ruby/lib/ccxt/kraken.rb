@@ -248,7 +248,7 @@ module Ccxt
       html = self.zendeskGet205893708WhatIsTheMinimumOrderSize()
       parts = html.split('<td class="wysiwyg-text-align-right">')
       numParts = len(parts)
-      if numParts < 3:
+      if numParts < 3
         raise ExchangeError(self.id + ' fetchMinOrderAmounts HTML page markup has changed: https://support.kraken.com/hc/en-us/articles/205893708-What-is-the-minimum-order-size-')
       result = {}
       # skip the part before the header and the header itself
@@ -256,10 +256,10 @@ module Ccxt
         part = parts[i]
         chunks = part.split('</td>')
         amountAndCode = chunks[0]
-        if amountAndCode != 'To Be Announced':
+        if amountAndCode != 'To Be Announced'
           pieces = amountAndCode.split(' ')
           numPieces = len(pieces)
-          if numPieces == 2:
+          if numPieces == 2
             amount = float(pieces[0])
             code = self.common_currency_code(pieces[1])
             result[code] = amount
@@ -278,25 +278,25 @@ module Ccxt
         quoteId = market['quote']
         base = baseId
         quote = quoteId
-        if len(base) > 3:
-          if (base[0] == 'X') or (base[0] == 'Z'):
+        if len(base) > 3
+          if (base[0] == 'X') or (base[0] == 'Z')
             base = base[1:]
-        if len(quote) > 3:
-          if (quote[0] == 'X') or (quote[0] == 'Z'):
+        if len(quote) > 3
+          if (quote[0] == 'X') or (quote[0] == 'Z')
             quote = quote[1:]
         base = self.common_currency_code(base)
         quote = self.common_currency_code(quote)
         darkpool = id.find('.d') >= 0
         symbol = market['altname'] if darkpool else (base + '/' + quote)
         maker = nil
-        if 'fees_maker' in market:
+        if 'fees_maker' in market
           maker = float(market['fees_maker'][0][1]) / 100
         precision = {
           'amount' => market['lot_decimals'],
           'price' => market['pair_decimals'],
         }
         minAmount = math.pow(10, -precision['amount'])
-        if base in limits:
+        if base in limits
           minAmount = limits[base]
         result.append({
           'id' => id,
@@ -421,10 +421,10 @@ module Ccxt
       taker = tiers['taker'][1]
       maker = tiers['maker'][1]
       for i in range(0, len(tiers['taker'])):
-        if tradedVolume >= tiers['taker'][i][0]:
+        if tradedVolume >= tiers['taker'][i][0]
           taker = tiers['taker'][i][1]
       for i in range(0, len(tiers['maker'])):
-        if tradedVolume >= tiers['maker'][i][0]:
+        if tradedVolume >= tiers['maker'][i][0]
           maker = tiers['maker'][i][1]
       return {
         'info' => response,
@@ -436,12 +436,12 @@ module Ccxt
     def fetch_order_book(symbol, limit = nil, params={})
       self.load_markets()
       market = self.market(symbol)
-      if market['darkpool']:
+      if market['darkpool']
         raise ExchangeError(self.id + ' does not provide an order book for darkpool symbol ' + symbol)
       request = {
         'pair' => market['id'],
       }
-      if limit is not nil:
+      if limit is not nil
         request['count'] = limit  # 100
       response = self.publicGetDepth(self.extend(request, params))
       orderbook = response['result'][market['id']]
@@ -451,12 +451,12 @@ module Ccxt
     def parse_ticker(ticker, market = nil)
       timestamp = self.milliseconds()
       symbol = nil
-      if market:
+      if market
         symbol = market['symbol']
       baseVolume = float(ticker['v'][1])
       vwap = float(ticker['p'][1])
       quoteVolume = nil
-      if baseVolume is not nil and vwap is not nil:
+      if baseVolume is not nil and vwap is not nil
         quoteVolume = baseVolume * vwap
       last = float(ticker['c'][0])
       return {
@@ -489,8 +489,8 @@ module Ccxt
       for s in range(0, len(self.symbols)):
         symbol = self.symbols[s]
         market = self.markets[symbol]
-        if market['active']:
-          if not market['darkpool']:
+        if market['active']
+          if not market['darkpool']
             pairs.append(market['id'])
       filter = ','.join(pairs)
       response = self.publicGetTicker(self.extend({
@@ -511,7 +511,7 @@ module Ccxt
     def fetch_ticker(symbol, params={})
       self.load_markets()
       darkpool = symbol.find('.d') >= 0
-      if darkpool:
+      if darkpool
         raise ExchangeError(self.id + ' does not provide a ticker for darkpool symbol ' + symbol)
       market = self.market(symbol)
       response = self.publicGetTicker(self.extend({
@@ -539,7 +539,7 @@ module Ccxt
         'pair' => market['id'],
         'interval' => self.timeframes[timeframe],
       }
-      if since is not nil:
+      if since is not nil
         request['since'] = int((since - 1) / 1000)
       response = self.publicGetOHLC(self.extend(request, params))
       ohlcvs = response['result'][market['id']]
@@ -574,7 +574,7 @@ module Ccxt
       type = self.parse_ledger_entry_type(self.safe_string(item, 'type'))
       code = self.safeCurrencyCode(item, 'asset', currency)
       amount = self.safe_float(item, 'amount')
-      if amount < 0:
+      if amount < 0
         direction = 'out'
         amount = abs(amount)
       else:
@@ -582,7 +582,7 @@ module Ccxt
       time = self.safe_float(item, 'time')
       timestamp = nil
       datetime = nil
-      if time is not nil:
+      if time is not nil
         timestamp = int(time * 1000)
         datetime = self.iso8601(timestamp)
       fee = {
@@ -614,10 +614,10 @@ module Ccxt
       self.load_markets()
       request = {}
       currency = nil
-      if code is not nil:
+      if code is not nil
         currency = self.currency(code)
         request['asset'] = currency['id']
-      if since is not nil:
+      if since is not nil
         request['start'] = int(since / 1000)
       response = self.privatePostLedgers(self.extend(request, params))
       # { error: [],
@@ -685,14 +685,14 @@ module Ccxt
       marketId = self.safe_string(trade, 'pair')
       foundMarket = self.find_market_by_altname_or_id(marketId)
       symbol = nil
-      if foundMarket is not nil:
+      if foundMarket is not nil
         market = foundMarket
-      elif marketId is not nil:
+      elif marketId is not nil
         # delisted market ids go here
         market = self.get_delisted_market_by_id(marketId)
-      if market is not nil:
+      if market is not nil
         symbol = market['symbol']
-      if 'ordertxid' in trade:
+      if 'ordertxid' in trade
         order = trade['ordertxid']
         id = self.safe_string_2(trade, 'id', 'postxid')
         timestamp = int(trade['time'] * 1000)
@@ -700,9 +700,9 @@ module Ccxt
         type = trade['ordertype']
         price = self.safe_float(trade, 'price')
         amount = self.safe_float(trade, 'vol')
-        if 'fee' in trade:
+        if 'fee' in trade
           currency = nil
-          if market:
+          if market
             currency = market['quote']
           fee = {
             'cost' => self.safe_float(trade, 'fee'),
@@ -715,7 +715,7 @@ module Ccxt
         price = float(trade[0])
         amount = float(trade[1])
         tradeLength = len(trade)
-        if tradeLength > 6:
+        if tradeLength > 6
           id = trade[6]  # artificially added as per  #1794
       return {
         'id' => id,
@@ -755,7 +755,7 @@ module Ccxt
       trades = result[id]
       # trades is a sorted array: last(most recent trade) goes last
       length = len(trades)
-      if length <= 0:
+      if length <= 0
         return []
       lastTrade = trades[length - 1]
       lastTradeId = self.safe_string(result, 'last')
@@ -767,20 +767,20 @@ module Ccxt
       self.load_markets()
       response = self.privatePostBalance(params)
       balances = self.safe_value(response, 'result')
-      if balances is nil:
+      if balances is nil
         raise ExchangeNotAvailable(self.id + ' fetchBalance failed due to a malformed response ' + self.json(response))
       result = {'info' => balances}
       currencies = list(balances.keys())
       for c in range(0, len(currencies)):
         currency = currencies[c]
         code = currency
-        if code in self.currencies_by_id:
+        if code in self.currencies_by_id
           code = self.currencies_by_id[code]['code']
         else:
           # X-ISO4217-A3 standard currency codes
-          if code[0] == 'X':
+          if code[0] == 'X'
             code = code[1:]
-          elif code[0] == 'Z':
+          elif code[0] == 'Z'
             code = code[1:]
           code = self.common_currency_code(code)
         balance = float(balances[currency])
@@ -806,12 +806,12 @@ module Ccxt
       marketOrder = (type == 'market')
       limitOrder = (type == 'limit')
       shouldIncludePrice = limitOrder or (not marketOrder and priceIsDefined)
-      if shouldIncludePrice:
+      if shouldIncludePrice
         order['price'] = self.price_to_precision(symbol, price)
       response = self.privatePostAddOrder(self.extend(order, params))
       id = self.safe_value(response['result'], 'txid')
-      if id is not nil:
-        if isinstance(id, list):
+      if id is not nil
+        if isinstance(id, list)
           length = len(id)
           id = id if (length > 1) else id[0]
       return {
@@ -836,28 +836,28 @@ module Ccxt
     end
 
     def find_market_by_altname_or_id(id)
-      if id in self.marketsByAltname:
+      if id in self.marketsByAltname
         return self.marketsByAltname[id]
-      elif id in self.markets_by_id:
+      elif id in self.markets_by_id
         return self.markets_by_id[id]
       return nil
     end
 
     def get_delisted_market_by_id(id)
-      if id is nil:
+      if id is nil
         return id
       market = self.safe_value(self.options['delistedMarketsById'], id)
-      if market is not nil:
+      if market is not nil
         return market
       baseIdStart = 0
       baseIdEnd = 3
       quoteIdStart = 3
       quoteIdEnd = 6
-      if len(id) == 8:
+      if len(id) == 8
         baseIdEnd = 4
         quoteIdStart = 4
         quoteIdEnd = 8
-      elif len(id) == 7:
+      elif len(id) == 7
         baseIdEnd = 4
         quoteIdStart = 4
         quoteIdEnd = 7
@@ -865,11 +865,11 @@ module Ccxt
       quoteId = id[quoteIdStart:quoteIdEnd]
       base = baseId
       quote = quoteId
-      if len(base) > 3:
-        if (base[0] == 'X') or (base[0] == 'Z'):
+      if len(base) > 3
+        if (base[0] == 'X') or (base[0] == 'Z')
           base = base[1:]
-      if len(quote) > 3:
-        if (quote[0] == 'X') or (quote[0] == 'Z'):
+      if len(quote) > 3
+        if (quote[0] == 'X') or (quote[0] == 'Z')
           quote = quote[1:]
       base = self.common_currency_code(base)
       quote = self.common_currency_code(quote)
@@ -903,9 +903,9 @@ module Ccxt
       marketId = self.safe_string(description, 'pair')
       foundMarket = self.find_market_by_altname_or_id(marketId)
       symbol = nil
-      if foundMarket is not nil:
+      if foundMarket is not nil
         market = foundMarket
-      elif marketId is not nil:
+      elif marketId is not nil
         # delisted market ids go here
         market = self.get_delisted_market_by_id(marketId)
       timestamp = int(order['opentm'] * 1000)
@@ -915,23 +915,23 @@ module Ccxt
       fee = nil
       cost = self.safe_float(order, 'cost')
       price = self.safe_float(description, 'price')
-      if (price is nil) or (price == 0):
+      if (price is nil) or (price == 0)
         price = self.safe_float(description, 'price2')
-      if (price is nil) or (price == 0):
+      if (price is nil) or (price == 0)
         price = self.safe_float(order, 'price', price)
       average = self.safe_float(order, 'price')
-      if market is not nil:
+      if market is not nil
         symbol = market['symbol']
-        if 'fee' in order:
+        if 'fee' in order
           flags = order['oflags']
           feeCost = self.safe_float(order, 'fee')
           fee = {
             'cost' => feeCost,
             'rate' => nil,
           }
-          if flags.find('fciq') >= 0:
+          if flags.find('fciq') >= 0
             fee['currency'] = market['quote']
-          elif flags.find('fcib') >= 0:
+          elif flags.find('fcib') >= 0
             fee['currency'] = market['base']
       status = self.parse_order_status(self.safe_string(order, 'status'))
       return {
@@ -1003,7 +1003,7 @@ module Ccxt
         # 'end' => 1234567890,  # ending unix timestamp or trade tx id of results(inclusive)
         # 'ofs' = result offset
       }
-      if since is not nil:
+      if since is not nil
         request['start'] = int(since / 1000)
       response = self.privatePostTradesHistory(self.extend(request, params))
       #
@@ -1036,7 +1036,7 @@ module Ccxt
       for i in range(0, len(ids)):
         trades[ids[i]]['id'] = ids[i]
       result = self.parse_trades(trades, nil, since, limit)
-      if symbol is nil:
+      if symbol is nil
         return result
       return self.filter_by_symbol(result, symbol)
     end
@@ -1049,8 +1049,8 @@ module Ccxt
           'txid' => id,
         }, params))
       except Exception as e:
-        if self.last_http_response:
-          if self.last_http_response.find('EOrder:Unknown order') >= 0:
+        if self.last_http_response
+          if self.last_http_response.find('EOrder:Unknown order') >= 0
             raise OrderNotFound(self.id + ' cancelOrder() error ' + self.last_http_response)
         raise e
       return response
@@ -1059,11 +1059,11 @@ module Ccxt
     def fetch_open_orders(symbol = nil, since = nil, limit = nil, params={})
       self.load_markets()
       request = {}
-      if since is not nil:
+      if since is not nil
         request['start'] = int(since / 1000)
       response = self.privatePostOpenOrders(self.extend(request, params))
       orders = self.parse_orders(response['result']['open'], nil, since, limit)
-      if symbol is nil:
+      if symbol is nil
         return orders
       return self.filter_by_symbol(orders, symbol)
     end
@@ -1071,11 +1071,11 @@ module Ccxt
     def fetch_closed_orders(symbol = nil, since = nil, limit = nil, params={})
       self.load_markets()
       request = {}
-      if since is not nil:
+      if since is not nil
         request['start'] = int(since / 1000)
       response = self.privatePostClosedOrders(self.extend(request, params))
       orders = self.parse_orders(response['result']['closed'], nil, since, limit)
-      if symbol is nil:
+      if symbol is nil
         return orders
       return self.filter_by_symbol(orders, symbol)
     end
@@ -1133,12 +1133,12 @@ module Ccxt
       id = self.safe_string(transaction, 'refid')
       txid = self.safe_string(transaction, 'txid')
       timestamp = self.safe_integer(transaction, 'time')
-      if timestamp is not nil:
+      if timestamp is not nil
         timestamp = timestamp * 1000
       code = nil
       currencyId = self.safe_string(transaction, 'asset')
       currency = self.safe_value(self.currencies_by_id, currencyId)
-      if currency is not nil:
+      if currency is not nil
         code = currency['code']
       else:
         code = self.common_currency_code(currencyId)
@@ -1147,8 +1147,8 @@ module Ccxt
       status = self.parse_transaction_status(self.safe_string(transaction, 'status'))
       type = self.safe_string(transaction, 'type')  # injected from the outside
       feeCost = self.safe_float(transaction, 'fee')
-      if feeCost is nil:
-        if type == 'deposit':
+      if feeCost is nil
+        if type == 'deposit'
           feeCost = 0
       return {
         'info' => transaction,
@@ -1183,7 +1183,7 @@ module Ccxt
     def fetch_deposits(code = nil, since = nil, limit = nil, params={})
       self.load_markets()
       # https://www.kraken.com/en-us/help/api#deposit-status
-      if code is nil:
+      if code is nil
         raise ArgumentsRequired(self.id + ' fetchDeposits requires a currency code argument')
       currency = self.currency(code)
       request = {
@@ -1209,7 +1209,7 @@ module Ccxt
     def fetch_withdrawals(code = nil, since = nil, limit = nil, params={})
       self.load_markets()
       # https://www.kraken.com/en-us/help/api#withdraw-status
-      if code is nil:
+      if code is nil
         raise ArgumentsRequired(self.id + ' fetchWithdrawals requires a currency code argument')
       currency = self.currency(code)
       request = {
@@ -1251,10 +1251,10 @@ module Ccxt
       currency = self.currency(code)
       # eslint-disable-next-line quotes
       method = self.safe_string(params, 'method')
-      if method is nil:
-        if self.options['cacheDepositMethodsOnFetchDepositAddress']:
+      if method is nil
+        if self.options['cacheDepositMethodsOnFetchDepositAddress']
           # cache depositMethods
-          if not(code in list(self.options['depositMethods'].keys())):
+          if not(code in list(self.options['depositMethods'].keys()))
             self.options['depositMethods'][code] = self.fetch_deposit_methods(code)
           method = self.options['depositMethods'][code][0]['method']
         else:
@@ -1266,7 +1266,7 @@ module Ccxt
       response = self.privatePostDepositAddresses(self.extend(request, params))  # overwrite methods
       result = response['result']
       numResults = len(result)
-      if numResults < 1:
+      if numResults < 1
         raise InvalidAddress(self.id + ' privatePostDepositAddresses() returned no addresses')
       address = self.safe_string(result[0], 'address')
       tag = self.safe_string_2(result[0], 'tag', 'memo')
@@ -1281,7 +1281,7 @@ module Ccxt
 
     def withdraw(code, amount, address, tag = nil, params={})
       self.check_address(address)
-      if 'key' in params:
+      if 'key' in params
         self.load_markets()
         currency = self.currency(code)
         response = self.privatePostWithdraw(self.extend({
@@ -1298,10 +1298,10 @@ module Ccxt
 
     def sign(path, api = 'public', method = 'GET', params={}, headers = nil, body = nil)
       url = '/' + self.version + '/' + api + '/' + path
-      if api == 'public':
-        if params:
+      if api == 'public'
+        if params
           url += '?' + self.urlencode(params)
-      elif api == 'private':
+      elif api == 'private'
         self.check_required_credentials()
         nonce = str(self.nonce())
         body = self.urlencode(self.extend({'nonce' => nonce}, params))
@@ -1327,26 +1327,26 @@ module Ccxt
     end
 
     def handle_errors(code, reason, url, method, headers, body, response)
-      if code == 520:
+      if code == 520
         raise ExchangeNotAvailable(self.id + ' ' + str(code) + ' ' + reason)
-      if body.find('Invalid order') >= 0:
+      if body.find('Invalid order') >= 0
         raise InvalidOrder(self.id + ' ' + body)
-      if body.find('Invalid nonce') >= 0:
+      if body.find('Invalid nonce') >= 0
         raise InvalidNonce(self.id + ' ' + body)
-      if body.find('Insufficient funds') >= 0:
+      if body.find('Insufficient funds') >= 0
         raise InsufficientFunds(self.id + ' ' + body)
-      if body.find('Cancel pending') >= 0:
+      if body.find('Cancel pending') >= 0
         raise CancelPending(self.id + ' ' + body)
-      if body.find('Invalid arguments:volume') >= 0:
+      if body.find('Invalid arguments:volume') >= 0
         raise InvalidOrder(self.id + ' ' + body)
-      if body[0] == '{':
-        if not isinstance(response, basestring):
-          if 'error' in response:
+      if body[0] == '{'
+        if not isinstance(response, basestring)
+          if 'error' in response
             numErrors = len(response['error'])
-            if numErrors:
+            if numErrors
               message = self.id + ' ' + self.json(response)
               for i in range(0, len(response['error'])):
-                if response['error'][i] in self.exceptions:
+                if response['error'][i] in self.exceptions
                   raise self.exceptions[response['error'][i]](message)
               raise ExchangeError(message)
     end
