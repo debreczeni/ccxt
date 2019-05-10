@@ -250,10 +250,10 @@ module Ccxt
       numParts = len(parts)
       if numParts < 3
         raise ExchangeError(self.id + ' fetchMinOrderAmounts HTML page markup has changed: https://support.kraken.com/hc/en-us/articles/205893708-What-is-the-minimum-order-size-')
+      end
       result = {}
       # skip the part before the header and the header itself
-      for i in range(2, len(parts)):
-        part = parts[i]
+      parts.each do |part|
         chunks = part.split('</td>')
         amountAndCode = chunks[0]
         if amountAndCode != 'To Be Announced'
@@ -263,6 +263,10 @@ module Ccxt
             amount = float(pieces[0])
             code = self.common_currency_code(pieces[1])
             result[code] = amount
+          end
+        end
+      end
+
       return result
     end
 
