@@ -34,7 +34,7 @@ module Ccxt
           'fetchDepositAddress' => True,
           'fetchTradingFee' => True,
           'fetchTradingFees' => True,
-          'CORS' => False,
+          'CORS' => false,
           'fetchCurrencies' => True,
           'fetchTickers' => True,
           'fetchOHLCV' => True,
@@ -108,8 +108,8 @@ module Ccxt
           # self is a bad way of hardcoding fees that change on daily basis
           # hardcoding is now considered obsolete, we will remove all of it eventually
           'funding' => {
-            'tierBased' => False,
-            'percentage' => False,
+            'tierBased' => false,
+            'percentage' => false,
             'withdraw' => {
               'BTC' => 0.001,
               'ETH' => 0.005,
@@ -340,11 +340,11 @@ module Ccxt
       amountLimits = {'min' => math.pow(10, -precision['amount']), 'max': math.pow(10, precision['amount'])}
       limits = {'amount' => amountLimits, 'price': priceLimits, 'cost': costLimits}
       defaults = {
-        'darkpool' => False,
+        'darkpool' => false,
         'info' => nil,
         'maker' => nil,
         'taker' => nil,
-        'active' => False,
+        'active' => false,
         'precision' => precision,
         'limits' => limits,
       }
@@ -968,7 +968,7 @@ module Ccxt
     def fetch_order(id, symbol = nil, params={})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
-        'trades' => True,  # whether or not to include trades in output(optional, default False)
+        'trades' => True,  # whether or not to include trades in output(optional, default false)
         'txid' => id,  # do not comma separate a list of ids - use fetchOrdersByIds instead
         # 'userref' => 'optional',  # restrict results to given user reference id(optional)
       }, params))
@@ -980,7 +980,7 @@ module Ccxt
     def fetch_orders_by_ids(ids, symbol = nil, params={})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
-        'trades' => True,  # whether or not to include trades in output(optional, default False)
+        'trades' => True,  # whether or not to include trades in output(optional, default false)
         'txid' => ','.join(ids),  # comma delimited list of transaction ids to query info about(20 maximum)
       }, params))
       result = self.safe_value(response, 'result', {})
@@ -998,7 +998,7 @@ module Ccxt
       self.load_markets()
       request = {
         # 'type' => 'all',  # any position, closed position, closing position, no position
-        # 'trades' => False,  # whether or not to include trades related to position in output
+        # 'trades' => false,  # whether or not to include trades related to position in output
         # 'start' => 1234567890,  # starting unix timestamp or trade tx id of results(exclusive)
         # 'end' => 1234567890,  # ending unix timestamp or trade tx id of results(inclusive)
         # 'ofs' = result offset
