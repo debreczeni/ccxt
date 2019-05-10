@@ -247,7 +247,7 @@ module Ccxt
     def fetch_min_order_amounts()
       html = self.zendeskGet205893708WhatIsTheMinimumOrderSize()
       parts = html.split('<td class="wysiwyg-text-align-right">')
-      numParts = len(parts)
+      numParts = parts.length
       if numParts < 3
         raise ExchangeError(self.id + ' fetchMinOrderAmounts HTML page markup has changed: https://support.kraken.com/hc/en-us/articles/205893708-What-is-the-minimum-order-size-')
       end
@@ -258,7 +258,7 @@ module Ccxt
         amountAndCode = chunks[0]
         if amountAndCode != 'To Be Announced'
           pieces = amountAndCode.split(' ')
-          numPieces = len(pieces)
+          numPieces = pieces.length
           if numPieces == 2
             amount = float(pieces[0])
             code = self.common_currency_code(pieces[1])
@@ -281,12 +281,12 @@ module Ccxt
         quoteId = market['quote']
         base = baseId
         quote = quoteId
-        if len(base) > 3
+        if base.length > 3
           if (base[0] == 'X') or (base[0] == 'Z')
             base = base[1:]
           end
         end
-        if len(quote) > 3
+        if quote.length > 3
           if (quote[0] == 'X') or (quote[0] == 'Z')
             quote = quote[1:]
           end
@@ -360,7 +360,7 @@ module Ccxt
       markets = [
         # {'id' => 'XXLMZEUR', 'symbol' => 'XLM/EUR', 'base' => 'XLM', 'quote' => 'EUR', 'altname' => 'XLMEUR'},
       ]
-      for i in range(0, len(markets)):
+      for i in range(0, markets.length):
         result.append(self.extend(defaults, markets[i]))
       return result
     end
@@ -380,7 +380,7 @@ module Ccxt
       currencies = self.safe_value(response, 'result')
       ids = list(currencies.keys())
       result = {}
-      for i in range(0, len(ids)):
+      for i in range(0, ids.length):
         id = ids[i]
         currency = currencies[id]
         # todo: will need to rethink the fees
@@ -508,7 +508,7 @@ module Ccxt
       tickers = response['result']
       ids = list(tickers.keys())
       result = {}
-      for i in range(0, len(ids)):
+      for i in range(0, ids.length):
         id = ids[i]
         market = self.markets_by_id[id]
         symbol = market['symbol']
@@ -642,7 +642,7 @@ module Ccxt
       ledger = self.safe_value(result, 'ledger', {})
       keys = list(ledger.keys())
       items = []
-      for i in range(0, len(keys)):
+      for i in range(0, keys.length):
         key = keys[i]
         value = ledger[key]
         value['id'] = key
@@ -670,7 +670,7 @@ module Ccxt
       result = response['result']
       keys = list(result.keys())
       items = []
-      for i in range(0, len(keys)):
+      for i in range(0, keys.length):
         key = keys[i]
         value = result[key]
         value['id'] = key
@@ -723,7 +723,7 @@ module Ccxt
         type = 'limit' if (trade[4] == 'l') else 'market'
         price = float(trade[0])
         amount = float(trade[1])
-        tradeLength = len(trade)
+        tradeLength = trade.length
         if tradeLength > 6
           id = trade[6]  # artificially added as per  #1794
       return {
@@ -763,7 +763,7 @@ module Ccxt
       result = response['result']
       trades = result[id]
       # trades is a sorted array: last(most recent trade) goes last
-      length = len(trades)
+      length = trades.length
       if length <= 0
         return []
       lastTrade = trades[length - 1]
@@ -780,7 +780,7 @@ module Ccxt
         raise ExchangeNotAvailable(self.id + ' fetchBalance failed due to a malformed response ' + self.json(response))
       result = {'info' => balances}
       currencies = list(balances.keys())
-      for c in range(0, len(currencies)):
+      for c in range(0, currencies.length):
         currency = currencies[c]
         code = currency
         if code in self.currencies_by_id
@@ -821,7 +821,7 @@ module Ccxt
       id = self.safe_value(response['result'], 'txid')
       if id is not nil
         if isinstance(id, list)
-          length = len(id)
+          length = id.length
           id = id if (length > 1) else id[0]
       return {
         'id' => id,
@@ -862,11 +862,11 @@ module Ccxt
       baseIdEnd = 3
       quoteIdStart = 3
       quoteIdEnd = 6
-      if len(id) == 8
+      if id.length == 8
         baseIdEnd = 4
         quoteIdStart = 4
         quoteIdEnd = 8
-      elif len(id) == 7
+      elif id.length == 7
         baseIdEnd = 4
         quoteIdStart = 4
         quoteIdEnd = 7
@@ -874,10 +874,10 @@ module Ccxt
       quoteId = id[quoteIdStart:quoteIdEnd]
       base = baseId
       quote = quoteId
-      if len(base) > 3
+      if base.length > 3
         if (base[0] == 'X') or (base[0] == 'Z')
           base = base[1:]
-      if len(quote) > 3
+      if quote.length > 3
         if (quote[0] == 'X') or (quote[0] == 'Z')
           quote = quote[1:]
       base = self.common_currency_code(base)
@@ -967,7 +967,7 @@ module Ccxt
     def parse_orders(orders, market = nil, since = nil, limit = nil)
       result = []
       ids = list(orders.keys())
-      for i in range(0, len(ids)):
+      for i in range(0, ids.length):
         id = ids[i]
         order = self.extend({'id' => id}, orders[id])
         result.append(self.parse_order(order, market))
@@ -995,7 +995,7 @@ module Ccxt
       result = self.safe_value(response, 'result', {})
       orders = []
       orderIds = list(result.keys())
-      for i in range(0, len(orderIds)):
+      for i in range(0, orderIds.length):
         id = orderIds[i]
         item = result[id]
         order = self.parse_order(self.extend({'id' => id}, item))
@@ -1042,7 +1042,7 @@ module Ccxt
       #
       trades = response['result']['trades']
       ids = list(trades.keys())
-      for i in range(0, len(ids)):
+      for i in range(0, ids.length):
         trades[ids[i]]['id'] = ids[i]
       result = self.parse_trades(trades, nil, since, limit)
       if symbol is nil
@@ -1181,7 +1181,7 @@ module Ccxt
 
     def parse_transactions_by_type(type, transactions, code = nil, since = nil, limit = nil)
       result = []
-      for i in range(0, len(transactions)):
+      for i in range(0, transactions.length):
         transaction = self.parse_transaction(self.extend({
           'type' => type,
         }, transactions[i]))
@@ -1274,7 +1274,7 @@ module Ccxt
       }
       response = self.privatePostDepositAddresses(self.extend(request, params))  # overwrite methods
       result = response['result']
-      numResults = len(result)
+      numResults = result.length
       if numResults < 1
         raise InvalidAddress(self.id + ' privatePostDepositAddresses() returned no addresses')
       address = self.safe_string(result[0], 'address')
