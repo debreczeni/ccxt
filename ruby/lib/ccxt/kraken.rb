@@ -21,7 +21,7 @@
 module Ccxt
   class Kraken < Exchange
 
-    def describe(self):
+    def describe()
       return self.deep_extend(super(kraken, self).describe(), {
         'id': 'kraken',
         'name': 'Kraken',
@@ -235,13 +235,13 @@ module Ccxt
         },
       })
 
-    def cost_to_precision(self, symbol, cost):
+    def cost_to_precision(symbol, cost)
       return self.decimal_to_precision(cost, TRUNCATE, self.markets[symbol]['precision']['price'], DECIMAL_PLACES)
 
-    def fee_to_precision(self, symbol, fee):
+    def fee_to_precision(symbol, fee)
       return self.decimal_to_precision(fee, TRUNCATE, self.markets[symbol]['precision']['amount'], DECIMAL_PLACES)
 
-    def fetch_min_order_amounts(self):
+    def fetch_min_order_amounts()
       html = self.zendeskGet205893708WhatIsTheMinimumOrderSize()
       parts = html.split('<td class="wysiwyg-text-align-right">')
       numParts = len(parts)
@@ -262,7 +262,7 @@ module Ccxt
             result[code] = amount
       return result
 
-    def fetch_markets(self, params={}):
+    def fetch_markets(params={})
       markets = self.publicGetAssetPairs()
       limits = self.fetch_min_order_amounts()
       keys = list(markets['result'].keys())
@@ -327,7 +327,7 @@ module Ccxt
       self.marketsByAltname = self.index_by(result, 'altname')
       return result
 
-    def append_inactive_markets(self, result):
+    def append_inactive_markets(result)
       # result should be an array to append to
       precision = {'amount': 8, 'price': 8}
       costLimits = {'min': 0, 'max': None}
@@ -350,7 +350,7 @@ module Ccxt
         result.append(self.extend(defaults, markets[i]))
       return result
 
-    def fetch_currencies(self, params={}):
+    def fetch_currencies(params={})
       response = self.publicGetAssets(params)
       #
       #     {
@@ -405,7 +405,7 @@ module Ccxt
         }
       return result
 
-    def fetch_trading_fees(self, params={}):
+    def fetch_trading_fees(params={})
       self.load_markets()
       self.check_required_credentials()
       response = self.privatePostTradeVolume(params)
@@ -425,7 +425,7 @@ module Ccxt
         'taker': taker,
       }
 
-    def fetch_order_book(self, symbol, limit=None, params={}):
+    def fetch_order_book(symbol, limit=None, params={})
       self.load_markets()
       market = self.market(symbol)
       if market['darkpool']:
@@ -439,7 +439,7 @@ module Ccxt
       orderbook = response['result'][market['id']]
       return self.parse_order_book(orderbook)
 
-    def parse_ticker(self, ticker, market=None):
+    def parse_ticker(ticker, market=None)
       timestamp = self.milliseconds()
       symbol = None
       if market:
@@ -473,7 +473,7 @@ module Ccxt
         'info': ticker,
       }
 
-    def fetch_tickers(self, symbols=None, params={}):
+    def fetch_tickers(symbols=None, params={})
       self.load_markets()
       pairs = []
       for s in range(0, len(self.symbols)):
@@ -497,7 +497,7 @@ module Ccxt
         result[symbol] = self.parse_ticker(ticker, market)
       return result
 
-    def fetch_ticker(self, symbol, params={}):
+    def fetch_ticker(symbol, params={})
       self.load_markets()
       darkpool = symbol.find('.d') >= 0
       if darkpool:
@@ -509,7 +509,7 @@ module Ccxt
       ticker = response['result'][market['id']]
       return self.parse_ticker(ticker, market)
 
-    def parse_ohlcv(self, ohlcv, market=None, timeframe='1m', since=None, limit=None):
+    def parse_ohlcv(ohlcv, market=None, timeframe='1m', since=None, limit=None)
       return [
         ohlcv[0] * 1000,
         float(ohlcv[1]),
@@ -519,7 +519,7 @@ module Ccxt
         float(ohlcv[6]),
       ]
 
-    def fetch_ohlcv(self, symbol, timeframe='1m', since=None, limit=None, params={}):
+    def fetch_ohlcv(symbol, timeframe='1m', since=None, limit=None, params={})
       self.load_markets()
       market = self.market(symbol)
       request = {
@@ -532,7 +532,7 @@ module Ccxt
       ohlcvs = response['result'][market['id']]
       return self.parse_ohlcvs(ohlcvs, market, timeframe, since, limit)
 
-    def parse_ledger_entry_type(self, type):
+    def parse_ledger_entry_type(type)
       types = {
         'trade': 'trade',
         'withdrawal': 'transaction',
@@ -542,7 +542,7 @@ module Ccxt
       }
       return self.safe_string(types, type, type)
 
-    def parse_ledger_entry(self, item, currency=None):
+    def parse_ledger_entry(item, currency=None)
       # {'LTFK7F-N2CUX-PNY4SX': {  refid: "TSJTGT-DT7WN-GPPQMJ",
       #                               time:  1520102320.555,
       #                               type: "trade",
@@ -593,7 +593,7 @@ module Ccxt
         'fee': fee,
       }
 
-    def fetch_ledger(self, code=None, since=None, limit=None, params={}):
+    def fetch_ledger(code=None, since=None, limit=None, params={})
       # https://www.kraken.com/features/api#get-ledgers-info
       self.load_markets()
       request = {}
@@ -624,7 +624,7 @@ module Ccxt
         items.append(value)
       return self.parse_ledger(items, currency, since, limit)
 
-    def fetch_ledger_entries_by_ids(self, ids, code=None, params={}):
+    def fetch_ledger_entries_by_ids(ids, code=None, params={})
       # https://www.kraken.com/features/api#query-ledgers
       self.load_markets()
       ids = ','.join(ids)
@@ -651,11 +651,11 @@ module Ccxt
         items.append(value)
       return self.parse_ledger(items)
 
-    def fetch_ledger_entry(self, id, code=None, params={}):
+    def fetch_ledger_entry(id, code=None, params={})
       items = self.fetchLedgerEntrysByIds([id], code, params)
       return items[0]
 
-    def parse_trade(self, trade, market=None):
+    def parse_trade(trade, market=None)
       timestamp = None
       side = None
       type = None
@@ -714,7 +714,7 @@ module Ccxt
         'fee': fee,
       }
 
-    def fetch_trades(self, symbol, since=None, limit=None, params={}):
+    def fetch_trades(symbol, since=None, limit=None, params={})
       self.load_markets()
       market = self.market(symbol)
       id = market['id']
@@ -743,7 +743,7 @@ module Ccxt
       lastTrade.append(lastTradeId)
       return self.parse_trades(trades, market, since, limit)
 
-    def fetch_balance(self, params={}):
+    def fetch_balance(params={})
       self.load_markets()
       response = self.privatePostBalance(params)
       balances = self.safe_value(response, 'result')
@@ -772,7 +772,7 @@ module Ccxt
         result[code] = account
       return self.parse_balance(result)
 
-    def create_order(self, symbol, type, side, amount, price=None, params={}):
+    def create_order(symbol, type, side, amount, price=None, params={})
       self.load_markets()
       market = self.market(symbol)
       order = {
@@ -813,14 +813,14 @@ module Ccxt
         'trades': None,
       }
 
-    def find_market_by_altname_or_id(self, id):
+    def find_market_by_altname_or_id(id)
       if id in self.marketsByAltname:
         return self.marketsByAltname[id]
       elif id in self.markets_by_id:
         return self.markets_by_id[id]
       return None
 
-    def get_delisted_market_by_id(self, id):
+    def get_delisted_market_by_id(id)
       if id is None:
         return id
       market = self.safe_value(self.options['delistedMarketsById'], id)
@@ -861,7 +861,7 @@ module Ccxt
       self.options['delistedMarketsById'][id] = market
       return market
 
-    def parse_order_status(self, status):
+    def parse_order_status(status)
       statuses = {
         'pending': 'open',  # order pending book entry
         'open': 'open',
@@ -871,7 +871,7 @@ module Ccxt
       }
       return self.safe_string(statuses, status, status)
 
-    def parse_order(self, order, market=None):
+    def parse_order(order, market=None)
       description = order['descr']
       side = description['type']
       type = description['ordertype']
@@ -929,7 +929,7 @@ module Ccxt
         # 'trades': self.parse_trades(order['trades'], market),
       }
 
-    def parse_orders(self, orders, market=None, since=None, limit=None):
+    def parse_orders(orders, market=None, since=None, limit=None)
       result = []
       ids = list(orders.keys())
       for i in range(0, len(ids)):
@@ -938,7 +938,7 @@ module Ccxt
         result.append(self.parse_order(order, market))
       return self.filter_by_since_limit(result, since, limit)
 
-    def fetch_order(self, id, symbol=None, params={}):
+    def fetch_order(id, symbol=None, params={})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
         'trades': True,  # whether or not to include trades in output(optional, default False)
@@ -949,7 +949,7 @@ module Ccxt
       order = self.parse_order(self.extend({'id': id}, orders[id]))
       return self.extend({'info': response}, order)
 
-    def fetch_orders_by_ids(self, ids, symbol=None, params={}):
+    def fetch_orders_by_ids(ids, symbol=None, params={})
       self.load_markets()
       response = self.privatePostQueryOrders(self.extend({
         'trades': True,  # whether or not to include trades in output(optional, default False)
@@ -965,7 +965,7 @@ module Ccxt
         orders.append(order)
       return orders
 
-    def fetch_my_trades(self, symbol=None, since=None, limit=None, params={}):
+    def fetch_my_trades(symbol=None, since=None, limit=None, params={})
       self.load_markets()
       request = {
         # 'type': 'all',  # any position, closed position, closing position, no position
@@ -1011,7 +1011,7 @@ module Ccxt
         return result
       return self.filter_by_symbol(result, symbol)
 
-    def cancel_order(self, id, symbol=None, params={}):
+    def cancel_order(id, symbol=None, params={})
       self.load_markets()
       response = None
       try:
@@ -1025,7 +1025,7 @@ module Ccxt
         raise e
       return response
 
-    def fetch_open_orders(self, symbol=None, since=None, limit=None, params={}):
+    def fetch_open_orders(symbol=None, since=None, limit=None, params={})
       self.load_markets()
       request = {}
       if since is not None:
@@ -1036,7 +1036,7 @@ module Ccxt
         return orders
       return self.filter_by_symbol(orders, symbol)
 
-    def fetch_closed_orders(self, symbol=None, since=None, limit=None, params={}):
+    def fetch_closed_orders(symbol=None, since=None, limit=None, params={})
       self.load_markets()
       request = {}
       if since is not None:
@@ -1047,7 +1047,7 @@ module Ccxt
         return orders
       return self.filter_by_symbol(orders, symbol)
 
-    def fetch_deposit_methods(self, code, params={}):
+    def fetch_deposit_methods(code, params={})
       self.load_markets()
       currency = self.currency(code)
       response = self.privatePostDepositMethods(self.extend({
@@ -1055,7 +1055,7 @@ module Ccxt
       }, params))
       return response['result']
 
-    def parse_transaction_status(self, status):
+    def parse_transaction_status(status)
       # IFEX transaction states
       statuses = {
         'Initial': 'pending',
@@ -1067,7 +1067,7 @@ module Ccxt
       }
       return self.safe_string(statuses, status, status)
 
-    def parse_transaction(self, transaction, currency=None):
+    def parse_transaction(transaction, currency=None)
       #
       # fetchDeposits
       #
@@ -1134,7 +1134,7 @@ module Ccxt
         },
       }
 
-    def parse_transactions_by_type(self, type, transactions, code=None, since=None, limit=None):
+    def parse_transactions_by_type(type, transactions, code=None, since=None, limit=None)
       result = []
       for i in range(0, len(transactions)):
         transaction = self.parse_transaction(self.extend({
@@ -1143,7 +1143,7 @@ module Ccxt
         result.append(transaction)
       return self.filterByCurrencySinceLimit(result, code, since, limit)
 
-    def fetch_deposits(self, code=None, since=None, limit=None, params={}):
+    def fetch_deposits(code=None, since=None, limit=None, params={})
       self.load_markets()
       # https://www.kraken.com/en-us/help/api#deposit-status
       if code is None:
@@ -1168,7 +1168,7 @@ module Ccxt
       #
       return self.parse_transactions_by_type('deposit', response['result'], code, since, limit)
 
-    def fetch_withdrawals(self, code=None, since=None, limit=None, params={}):
+    def fetch_withdrawals(code=None, since=None, limit=None, params={})
       self.load_markets()
       # https://www.kraken.com/en-us/help/api#withdraw-status
       if code is None:
@@ -1193,7 +1193,7 @@ module Ccxt
       #
       return self.parse_transactions_by_type('withdrawal', response['result'], code, since, limit)
 
-    def create_deposit_address(self, code, params={}):
+    def create_deposit_address(code, params={})
       request = {
         'new': 'true',
       }
@@ -1206,7 +1206,7 @@ module Ccxt
         'info': response,
       }
 
-    def fetch_deposit_address(self, code, params={}):
+    def fetch_deposit_address(code, params={})
       self.load_markets()
       currency = self.currency(code)
       # eslint-disable-next-line quotes
@@ -1238,7 +1238,7 @@ module Ccxt
         'info': response,
       }
 
-    def withdraw(self, code, amount, address, tag=None, params={}):
+    def withdraw(code, amount, address, tag=None, params={})
       self.check_address(address)
       if 'key' in params:
         self.load_markets()
@@ -1254,7 +1254,7 @@ module Ccxt
         }
       raise ExchangeError(self.id + " withdraw requires a 'key' parameter(withdrawal key name, as set up on your account)")
 
-    def sign(self, path, api='public', method='GET', params={}, headers=None, body=None):
+    def sign(path, api='public', method='GET', params={}, headers=None, body=None)
       url = '/' + self.version + '/' + api + '/' + path
       if api == 'public':
         if params:
@@ -1279,10 +1279,10 @@ module Ccxt
       url = self.urls['api'][api] + url
       return {'url': url, 'method': method, 'body': body, 'headers': headers}
 
-    def nonce(self):
+    def nonce()
       return self.milliseconds()
 
-    def handle_errors(self, code, reason, url, method, headers, body, response):
+    def handle_errors(code, reason, url, method, headers, body, response)
       if code == 520:
         raise ExchangeNotAvailable(self.id + ' ' + str(code) + ' ' + reason)
       if body.find('Invalid order') >= 0:
