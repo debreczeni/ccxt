@@ -512,24 +512,23 @@ module Ccxt
       tickers = response['result']
       ids = tickers.keys
       result = {}
-      for i in range(0, ids.length):
-        id = ids[i]
+      ids.each do |id|
         market = self.markets_by_id[id]
         symbol = market['symbol']
         ticker = tickers[id]
         result[symbol] = self.parse_ticker(ticker, market)
+      end
       return result
     end
 
     def fetch_ticker(symbol, params = {})
       self.load_markets()
-      darkpool = symbol.find('.d') >= 0
+      darkpool = symbol.ends_with?('.d')
       if darkpool
         raise ExchangeError(self.id + ' does not provide a ticker for darkpool symbol ' + symbol)
+      end
       market = self.market(symbol)
-      response = self.publicGetTicker(self.extend({
-        'pair' => market['id'],
-      }, params))
+      response = self.publicGetTicker({'pair' => market['id']}.merge params)
       ticker = response['result'][market['id']]
       return self.parse_ticker(ticker, market)
     end
