@@ -782,6 +782,7 @@ module Ccxt
       balances = self.safe_value(response, 'result')
       if balances.nil?
         raise ExchangeNotAvailable(self.id + ' fetchBalance failed due to a malformed response ' + self.json(response))
+      end
       result = {'info' => balances}
       currencies = balances.keys
       currencies.each do |currency|
@@ -938,10 +939,10 @@ module Ccxt
       fee = nil
       cost = self.safe_float(order, 'cost')
       price = self.safe_float(description, 'price')
-      if (price.nil?) or (price == 0)
+      if (price.nil?) || (price == 0)
         price = self.safe_float(description, 'price2')
       end
-      if (price.nil?) or (price == 0)
+      if (price.nil?) || (price == 0)
         price = self.safe_float(order, 'price', price)
       end
       average = self.safe_float(order, 'price')
@@ -1207,6 +1208,7 @@ module Ccxt
       transactions.each do |transaction|
         parsed_tx = self.parse_transaction({'type' => type}.merge transaction)
         result.append(parsed_tx)
+      end
       return self.filterByCurrencySinceLimit(result, code, since, limit)
     end
 
