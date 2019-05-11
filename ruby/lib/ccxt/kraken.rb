@@ -848,19 +848,21 @@ module Ccxt
     end
 
     def find_market_by_altname_or_id(id)
-      if id in self.marketsByAltname
+      if self.marketsByAltname.include?(id)
         return self.marketsByAltname[id]
-      elif id in self.markets_by_id
+      elsif self.markets_by_id.include?(id)
         return self.markets_by_id[id]
+      end
       return nil
     end
 
     def get_delisted_market_by_id(id)
-      if id is nil
-        return id
+      return unless id
+
       market = self.safe_value(self.options['delistedMarketsById'], id)
-      if market
-        return market
+
+      return market if market
+
       baseIdStart = 0
       baseIdEnd = 3
       quoteIdStart = 3
@@ -869,20 +871,25 @@ module Ccxt
         baseIdEnd = 4
         quoteIdStart = 4
         quoteIdEnd = 8
-      elif id.length == 7
+      elsif id.length == 7
         baseIdEnd = 4
         quoteIdStart = 4
         quoteIdEnd = 7
-      baseId = id[baseIdStart:baseIdEnd]
-      quoteId = id[quoteIdStart:quoteIdEnd]
+      end
+      baseId = id[baseIdStart, baseIdEnd]
+      quoteId = id[quoteIdStart, quoteIdEnd]
       base = baseId
       quote = quoteId
       if base.length > 3
         if (base[0] == 'X') or (base[0] == 'Z')
           base = base[1:]
+        end
+      end
       if quote.length > 3
         if (quote[0] == 'X') or (quote[0] == 'Z')
           quote = quote[1:]
+        end
+      end
       base = self.common_currency_code(base)
       quote = self.common_currency_code(quote)
       symbol = base + '/' + quote
@@ -917,9 +924,10 @@ module Ccxt
       symbol = nil
       if foundMarket
         market = foundMarket
-      elif marketId
+      elsif marketId
         # delisted market ids go here
         market = self.get_delisted_market_by_id(marketId)
+      end
       timestamp = int(order['opentm'] * 1000)
       amount = self.safe_float(order, 'vol')
       filled = self.safe_float(order, 'vol_exec')
