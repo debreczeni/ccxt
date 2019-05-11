@@ -1092,11 +1092,12 @@ module Ccxt
       self.load_markets()
       request = {}
       if since
-        request['start'] = int(since / 1000)
+        request['start'] = (since / 1000).to_i
+      end
       response = self.privatePostOpenOrders(request.merge(params)))
       orders = self.parse_orders(response['result']['open'], nil, since, limit)
-      if symbol.nil?
-        return orders
+
+      return orders if symbol.nil?
       return self.filter_by_symbol(orders, symbol)
     end
 
@@ -1104,20 +1105,19 @@ module Ccxt
       self.load_markets()
       request = {}
       if since
-        request['start'] = int(since / 1000)
+        request['start'] = (since / 1000).to_i
+      end
       response = self.privatePostClosedOrders(request.merge(params)))
       orders = self.parse_orders(response['result']['closed'], nil, since, limit)
-      if symbol.nil?
-        return orders
+
+      return orders if symbol.nil?
       return self.filter_by_symbol(orders, symbol)
     end
 
     def fetch_deposit_methods(code, params = {})
       self.load_markets()
       currency = self.currency(code)
-      response = self.privatePostDepositMethods(self.extend({
-        'asset' => currency['id'],
-      }, params))
+      response = self.privatePostDepositMethods({'asset' => currency['id']}.merge params)
       return response['result']
     end
 
@@ -1165,8 +1165,7 @@ module Ccxt
       id = self.safe_string(transaction, 'refid')
       txid = self.safe_string(transaction, 'txid')
       timestamp = self.safe_integer(transaction, 'time')
-      if timestamp
-        timestamp = timestamp * 1000
+      timestamp = timestamp * 1000 if timestamp
       code = nil
       currencyId = self.safe_string(transaction, 'asset')
       currency = self.safe_value(self.currencies_by_id, currencyId)
@@ -1174,14 +1173,15 @@ module Ccxt
         code = currency['code']
       else
         code = self.common_currency_code(currencyId)
+      end
       address = self.safe_string(transaction, 'info')
       amount = self.safe_float(transaction, 'amount')
       status = self.parse_transaction_status(self.safe_string(transaction, 'status'))
       type = self.safe_string(transaction, 'type')  # injected from the outside
       feeCost = self.safe_float(transaction, 'fee')
-      if feeCost.nil?
-        if type == 'deposit'
-          feeCost = 0
+      if feeCost.nil? && type == 'deposit'
+        feeCost = 0
+      end
       return {
         'info' => transaction,
         'id' => id,
