@@ -20,7 +20,7 @@ module Ccxt
   class Kraken < Exchange
 
     def describe()
-      return self.deep_extend(super(kraken, self).describe(), {
+      return self.deep_extend(super, {
         'id' => 'kraken',
         'name' => 'Kraken',
         'countries' => ['US'],
