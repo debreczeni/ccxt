@@ -336,6 +336,7 @@ module Ccxt
             },
           },
         })
+      end
       result = self.append_inactive_markets(result)
       self.marketsByAltname = self.index_by(result, 'altname')
       return result
@@ -362,6 +363,7 @@ module Ccxt
       ]
       markets.each do |market|
         result.append(defaults.merge(market))
+      end
       return result
     end
 
@@ -380,8 +382,7 @@ module Ccxt
       currencies = self.safe_value(response, 'result')
       ids = currencies.keys()
       result = {}
-      for i in range(0, ids.length):
-        id = ids[i]
+      ids.each do |id|
         currency = currencies[id]
         # todo: will need to rethink the fees
         # see: https://support.kraken.com/hc/en-us/articles/201893608-What-are-the-withdrawal-fees-
@@ -418,6 +419,7 @@ module Ccxt
             },
           },
         }
+      end
       return result
     end
 
