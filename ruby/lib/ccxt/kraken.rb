@@ -1204,11 +1204,9 @@ module Ccxt
 
     def parse_transactions_by_type(type, transactions, code = nil, since = nil, limit = nil)
       result = []
-      for i in range(0, transactions.length):
-        transaction = self.parse_transaction(self.extend({
-          'type' => type,
-        }, transactions[i]))
-        result.append(transaction)
+      transactions.each do |transaction|
+        parsed_tx = self.parse_transaction({'type' => type}.merge transaction)
+        result.append(parsed_tx)
       return self.filterByCurrencySinceLimit(result, code, since, limit)
     end
 
@@ -1217,6 +1215,7 @@ module Ccxt
       # https://www.kraken.com/en-us/help/api#deposit-status
       if code.nil?
         raise ArgumentsRequired(self.id + ' fetchDeposits requires a currency code argument')
+      end
       currency = self.currency(code)
       request = {
         'asset' => currency['id'],
@@ -1243,6 +1242,7 @@ module Ccxt
       # https://www.kraken.com/en-us/help/api#withdraw-status
       if code.nil?
         raise ArgumentsRequired(self.id + ' fetchWithdrawals requires a currency code argument')
+      end
       currency = self.currency(code)
       request = {
         'asset' => currency['id'],
@@ -1282,24 +1282,28 @@ module Ccxt
       self.load_markets()
       currency = self.currency(code)
       # eslint-disable-next-line quotes
-      method = self.safe_string(params, 'method')
-      if method.nil?
+      deposit_method = self.safe_string(params, 'method')
+      if deposit_method.nil?
         if self.options['cacheDepositMethodsOnFetchDepositAddress']
           # cache depositMethods
-          if not(code in self.options['depositMethods'].keys)
+          if not(self.options['depositMethods'].keys.include? code)
             self.options['depositMethods'][code] = self.fetch_deposit_methods(code)
-          method = self.options['depositMethods'][code][0]['method']
+          end
+          deposit_method = self.options['depositMethods'][code][0]['method']
         else
           raise ExchangeError(self.id + ' fetchDepositAddress() requires an extra `method` parameter. Use fetchDepositMethods("' + code + '") to get a list of available deposit methods or enable the exchange property .options["cacheDepositMethodsOnFetchDepositAddress"] = true')
+        end
+      end
       request = {
         'asset' => currency['id'],
-        'method' => method,
+        'method' => deposit_method,
       }
       response = self.privatePostDepositAddresses(request.merge(params)))  # overwrite methods
       result = response['result']
       numResults = result.length
       if numResults < 1
         raise InvalidAddress(self.id + ' privatePostDepositAddresses() returned no addresses')
+      end
       address = self.safe_string(result[0], 'address')
       tag = self.safe_string_2(result[0], 'tag', 'memo')
       self.check_address(address)
@@ -1313,18 +1317,19 @@ module Ccxt
 
     def withdraw(code, amount, address, tag = nil, params = {})
       self.check_address(address)
-      if 'key' in params
+      if params['key']
         self.load_markets()
         currency = self.currency(code)
-        response = self.privatePostWithdraw(self.extend({
+        response = self.privatePostWithdraw({
           'asset' => currency['id'],
           'amount' => amount,
           # 'address' => address,  # they don't allow withdrawals to direct addresses
-        }, params))
+        }.merge params))
         return {
           'info' => response,
           'id' => response['result'],
         }
+      end
       raise ExchangeError(self.id + " withdraw requires a 'key' parameter(withdrawal key name, as set up on your account)")
     end
 
@@ -1333,6 +1338,7 @@ module Ccxt
       if api == 'public'
         if params
           url += '?' + self.urlencode(params)
+        end
       elsif api == 'private'
         self.check_required_credentials()
         nonce = str(self.nonce())
@@ -1350,6 +1356,7 @@ module Ccxt
         }
       else
         url = '/' + path
+      end
       url = self.urls['api'][api] + url
       return {'url' => url, 'method' => method, 'body' => body, 'headers' => headers}
     end
