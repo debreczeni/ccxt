@@ -273,7 +273,7 @@ module Ccxt
     def fetch_markets(params = {})
       markets = self.publicGetAssetPairs()
       limits = self.fetch_min_order_amounts()
-      keys = markets['result'].keys()
+      keys = markets['result'].keys
       result = []
       keys.each do |id|
         market = markets['result'][id]
@@ -380,7 +380,7 @@ module Ccxt
       #     }
       #
       currencies = self.safe_value(response, 'result')
-      ids = currencies.keys()
+      ids = currencies.keys
       result = {}
       ids.each do |id|
         currency = currencies[id]
@@ -510,7 +510,7 @@ module Ccxt
       filter = pairs.join ','
       response = self.publicGetTicker({'pair' => filter}.merge params)
       tickers = response['result']
-      ids = tickers.keys()
+      ids = tickers.keys
       result = {}
       for i in range(0, ids.length):
         id = ids[i]
@@ -644,7 +644,7 @@ module Ccxt
       #                                                balance: "0.0000051000"           },
       result = self.safe_value(response, 'result', {})
       ledger = self.safe_value(result, 'ledger', {})
-      keys = ledger.keys()
+      keys = ledger.keys
       items = []
       for i in range(0, keys.length):
         key = keys[i]
@@ -672,7 +672,7 @@ module Ccxt
       #                                          fee: "0.0050000000",
       #                                      balance: "0.0000051000"           }} }
       result = response['result']
-      keys = result.keys()
+      keys = result.keys
       items = []
       for i in range(0, keys.length):
         key = keys[i]
@@ -783,7 +783,7 @@ module Ccxt
       if balances is nil
         raise ExchangeNotAvailable(self.id + ' fetchBalance failed due to a malformed response ' + self.json(response))
       result = {'info' => balances}
-      currencies = balances.keys()
+      currencies = balances.keys
       for c in range(0, currencies.length):
         currency = currencies[c]
         code = currency
@@ -970,7 +970,7 @@ module Ccxt
 
     def parse_orders(orders, market = nil, since = nil, limit = nil)
       result = []
-      ids = orders.keys()
+      ids = orders.keys
       for i in range(0, ids.length):
         id = ids[i]
         order = self.extend({'id' => id}, orders[id])
@@ -998,7 +998,7 @@ module Ccxt
       }, params))
       result = self.safe_value(response, 'result', {})
       orders = []
-      orderIds = result.keys()
+      orderIds = result.keys
       for i in range(0, orderIds.length):
         id = orderIds[i]
         item = result[id]
@@ -1045,7 +1045,7 @@ module Ccxt
       #     }
       #
       trades = response['result']['trades']
-      ids = trades.keys()
+      ids = trades.keys
       for i in range(0, ids.length):
         trades[ids[i]]['id'] = ids[i]
       result = self.parse_trades(trades, nil, since, limit)
@@ -1267,7 +1267,7 @@ module Ccxt
       if method is nil
         if self.options['cacheDepositMethodsOnFetchDepositAddress']
           # cache depositMethods
-          if not(code in self.options['depositMethods'].keys())
+          if not(code in self.options['depositMethods'].keys)
             self.options['depositMethods'][code] = self.fetch_deposit_methods(code)
           method = self.options['depositMethods'][code][0]['method']
         else:
