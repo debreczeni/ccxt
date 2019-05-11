@@ -551,7 +551,7 @@ module Ccxt
         'pair' => market['id'],
         'interval' => self.timeframes[timeframe],
       }
-      if since is not nil
+      if since
         request['since'] = int((since - 1) / 1000)
       response = self.publicGetOHLC(request.merge(params)))
       ohlcvs = response['result'][market['id']]
@@ -594,7 +594,7 @@ module Ccxt
       time = self.safe_float(item, 'time')
       timestamp = nil
       datetime = nil
-      if time is not nil
+      if time
         timestamp = int(time * 1000)
         datetime = self.iso8601(timestamp)
       fee = {
@@ -626,10 +626,10 @@ module Ccxt
       self.load_markets()
       request = {}
       currency = nil
-      if code is not nil
+      if code
         currency = self.currency(code)
         request['asset'] = currency['id']
-      if since is not nil
+      if since
         request['start'] = int(since / 1000)
       response = self.privatePostLedgers(request.merge(params)))
       # { error: [],
@@ -697,12 +697,12 @@ module Ccxt
       marketId = self.safe_string(trade, 'pair')
       foundMarket = self.find_market_by_altname_or_id(marketId)
       symbol = nil
-      if foundMarket is not nil
+      if foundMarket
         market = foundMarket
-      elif marketId is not nil
+      elif marketId
         # delisted market ids go here
         market = self.get_delisted_market_by_id(marketId)
-      if market is not nil
+      if market
         symbol = market['symbol']
       if 'ordertxid' in trade
         order = trade['ordertxid']
@@ -814,7 +814,7 @@ module Ccxt
         'ordertype' => type,
         'volume' => self.amount_to_precision(symbol, amount),
       }
-      priceIsDefined = (price is not nil)
+      priceIsDefined = !!price
       marketOrder = (type == 'market')
       limitOrder = (type == 'limit')
       shouldIncludePrice = limitOrder or (not marketOrder and priceIsDefined)
@@ -822,7 +822,7 @@ module Ccxt
         order['price'] = self.price_to_precision(symbol, price)
       response = self.privatePostAddOrder(self.extend(order, params))
       id = self.safe_value(response['result'], 'txid')
-      if id is not nil
+      if id
         if isinstance(id, list)
           length = id.length
           id = id if (length > 1) else id[0]
@@ -859,7 +859,7 @@ module Ccxt
       if id is nil
         return id
       market = self.safe_value(self.options['delistedMarketsById'], id)
-      if market is not nil
+      if market
         return market
       baseIdStart = 0
       baseIdEnd = 3
@@ -915,9 +915,9 @@ module Ccxt
       marketId = self.safe_string(description, 'pair')
       foundMarket = self.find_market_by_altname_or_id(marketId)
       symbol = nil
-      if foundMarket is not nil
+      if foundMarket
         market = foundMarket
-      elif marketId is not nil
+      elif marketId
         # delisted market ids go here
         market = self.get_delisted_market_by_id(marketId)
       timestamp = int(order['opentm'] * 1000)
@@ -932,7 +932,7 @@ module Ccxt
       if (price is nil) or (price == 0)
         price = self.safe_float(order, 'price', price)
       average = self.safe_float(order, 'price')
-      if market is not nil
+      if market
         symbol = market['symbol']
         if 'fee' in order
           flags = order['oflags']
@@ -1015,7 +1015,7 @@ module Ccxt
         # 'end' => 1234567890,  # ending unix timestamp or trade tx id of results(inclusive)
         # 'ofs' = result offset
       }
-      if since is not nil
+      if since
         request['start'] = int(since / 1000)
       response = self.privatePostTradesHistory(request.merge(params)))
       #
@@ -1071,7 +1071,7 @@ module Ccxt
     def fetch_open_orders(symbol = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       request = {}
-      if since is not nil
+      if since
         request['start'] = int(since / 1000)
       response = self.privatePostOpenOrders(request.merge(params)))
       orders = self.parse_orders(response['result']['open'], nil, since, limit)
@@ -1083,7 +1083,7 @@ module Ccxt
     def fetch_closed_orders(symbol = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       request = {}
-      if since is not nil
+      if since
         request['start'] = int(since / 1000)
       response = self.privatePostClosedOrders(request.merge(params)))
       orders = self.parse_orders(response['result']['closed'], nil, since, limit)
@@ -1145,12 +1145,12 @@ module Ccxt
       id = self.safe_string(transaction, 'refid')
       txid = self.safe_string(transaction, 'txid')
       timestamp = self.safe_integer(transaction, 'time')
-      if timestamp is not nil
+      if timestamp
         timestamp = timestamp * 1000
       code = nil
       currencyId = self.safe_string(transaction, 'asset')
       currency = self.safe_value(self.currencies_by_id, currencyId)
-      if currency is not nil
+      if currency
         code = currency['code']
       else:
         code = self.common_currency_code(currencyId)
