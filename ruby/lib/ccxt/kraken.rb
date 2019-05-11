@@ -782,7 +782,7 @@ module Ccxt
       self.load_markets()
       response = self.privatePostBalance(params)
       balances = self.safe_value(response, 'result')
-      if balances is nil
+      if balances.nil?
         raise ExchangeNotAvailable(self.id + ' fetchBalance failed due to a malformed response ' + self.json(response))
       result = {'info' => balances}
       currencies = balances.keys
@@ -938,9 +938,9 @@ module Ccxt
       fee = nil
       cost = self.safe_float(order, 'cost')
       price = self.safe_float(description, 'price')
-      if (price is nil) or (price == 0)
+      if (price.nil?) or (price == 0)
         price = self.safe_float(description, 'price2')
-      if (price is nil) or (price == 0)
+      if (price.nil?) or (price == 0)
         price = self.safe_float(order, 'price', price)
       average = self.safe_float(order, 'price')
       if market
@@ -1059,7 +1059,7 @@ module Ccxt
       for i in range(0, ids.length):
         trades[ids[i]]['id'] = ids[i]
       result = self.parse_trades(trades, nil, since, limit)
-      if symbol is nil
+      if symbol.nil?
         return result
       return self.filter_by_symbol(result, symbol)
     end
@@ -1086,7 +1086,7 @@ module Ccxt
         request['start'] = int(since / 1000)
       response = self.privatePostOpenOrders(request.merge(params)))
       orders = self.parse_orders(response['result']['open'], nil, since, limit)
-      if symbol is nil
+      if symbol.nil?
         return orders
       return self.filter_by_symbol(orders, symbol)
     end
@@ -1098,7 +1098,7 @@ module Ccxt
         request['start'] = int(since / 1000)
       response = self.privatePostClosedOrders(request.merge(params)))
       orders = self.parse_orders(response['result']['closed'], nil, since, limit)
-      if symbol is nil
+      if symbol.nil?
         return orders
       return self.filter_by_symbol(orders, symbol)
     end
@@ -1170,7 +1170,7 @@ module Ccxt
       status = self.parse_transaction_status(self.safe_string(transaction, 'status'))
       type = self.safe_string(transaction, 'type')  # injected from the outside
       feeCost = self.safe_float(transaction, 'fee')
-      if feeCost is nil
+      if feeCost.nil?
         if type == 'deposit'
           feeCost = 0
       return {
@@ -1206,7 +1206,7 @@ module Ccxt
     def fetch_deposits(code = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       # https://www.kraken.com/en-us/help/api#deposit-status
-      if code is nil
+      if code.nil?
         raise ArgumentsRequired(self.id + ' fetchDeposits requires a currency code argument')
       currency = self.currency(code)
       request = {
@@ -1232,7 +1232,7 @@ module Ccxt
     def fetch_withdrawals(code = nil, since = nil, limit = nil, params = {})
       self.load_markets()
       # https://www.kraken.com/en-us/help/api#withdraw-status
-      if code is nil
+      if code.nil?
         raise ArgumentsRequired(self.id + ' fetchWithdrawals requires a currency code argument')
       currency = self.currency(code)
       request = {
@@ -1274,7 +1274,7 @@ module Ccxt
       currency = self.currency(code)
       # eslint-disable-next-line quotes
       method = self.safe_string(params, 'method')
-      if method is nil
+      if method.nil?
         if self.options['cacheDepositMethodsOnFetchDepositAddress']
           # cache depositMethods
           if not(code in self.options['depositMethods'].keys)
