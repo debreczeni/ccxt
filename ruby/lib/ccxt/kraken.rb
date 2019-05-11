@@ -589,7 +589,7 @@ module Ccxt
       if amount < 0
         direction = 'out'
         amount = abs(amount)
-      else:
+      else
         direction = 'in'
       time = self.safe_float(item, 'time')
       timestamp = nil
@@ -720,7 +720,7 @@ module Ccxt
             'cost' => self.safe_float(trade, 'fee'),
             'currency' => currency,
           }
-      else:
+      else
         timestamp = int(trade[2] * 1000)
         side = 'sell' if (trade[3] == 's') else 'buy'
         type = 'limit' if (trade[4] == 'l') else 'market'
@@ -788,7 +788,7 @@ module Ccxt
         code = currency
         if code in self.currencies_by_id
           code = self.currencies_by_id[code]['code']
-        else:
+        else
           # X-ISO4217-A3 standard currency codes
           if code[0] == 'X'
             code = code[1:]
@@ -1160,7 +1160,7 @@ module Ccxt
       currency = self.safe_value(self.currencies_by_id, currencyId)
       if currency
         code = currency['code']
-      else:
+      else
         code = self.common_currency_code(currencyId)
       address = self.safe_string(transaction, 'info')
       amount = self.safe_float(transaction, 'amount')
@@ -1277,7 +1277,7 @@ module Ccxt
           if not(code in self.options['depositMethods'].keys)
             self.options['depositMethods'][code] = self.fetch_deposit_methods(code)
           method = self.options['depositMethods'][code][0]['method']
-        else:
+        else
           raise ExchangeError(self.id + ' fetchDepositAddress() requires an extra `method` parameter. Use fetchDepositMethods("' + code + '") to get a list of available deposit methods or enable the exchange property .options["cacheDepositMethodsOnFetchDepositAddress"] = true')
       request = {
         'asset' => currency['id'],
@@ -1336,7 +1336,7 @@ module Ccxt
           'API-Sign' => self.decode(signature),
           'Content-Type' => 'application/x-www-form-urlencoded',
         }
-      else:
+      else
         url = '/' + path
       url = self.urls['api'][api] + url
       return {'url' => url, 'method' => method, 'body' => body, 'headers' => headers}
