@@ -940,22 +940,27 @@ module Ccxt
       price = self.safe_float(description, 'price')
       if (price.nil?) or (price == 0)
         price = self.safe_float(description, 'price2')
+      end
       if (price.nil?) or (price == 0)
         price = self.safe_float(order, 'price', price)
+      end
       average = self.safe_float(order, 'price')
       if market
         symbol = market['symbol']
-        if 'fee' in order
+        if order['fee']
           flags = order['oflags']
           feeCost = self.safe_float(order, 'fee')
           fee = {
             'cost' => feeCost,
             'rate' => nil,
           }
-          if flags.find('fciq') >= 0
+          if flags.match('fciq')
             fee['currency'] = market['quote']
-          elsif flags.find('fcib') >= 0
+          elsif flags.match('fcib')
             fee['currency'] = market['base']
+          end
+        end
+      end
       status = self.parse_order_status(self.safe_string(order, 'status'))
       return {
         'id' => order['id'],
@@ -981,23 +986,23 @@ module Ccxt
     def parse_orders(orders, market = nil, since = nil, limit = nil)
       result = []
       ids = orders.keys
-      for i in range(0, ids.length):
-        id = ids[i]
-        order = self.extend({'id' => id}, orders[id])
+      ids.each do |id|
+        order = {'id' => id}merge orders[id]
         result.append(self.parse_order(order, market))
+      end
       return self.filter_by_since_limit(result, since, limit)
     end
 
     def fetch_order(id, symbol = nil, params = {})
       self.load_markets()
-      response = self.privatePostQueryOrders(self.extend({
+      response = self.privatePostQueryOrders({
         'trades' => true,  # whether or not to include trades in output(optional, default false)
         'txid' => id,  # do not comma separate a list of ids - use fetchOrdersByIds instead
         # 'userref' => 'optional',  # restrict results to given user reference id(optional)
-      }, params))
+      }.merge params)
       orders = response['result']
-      order = self.parse_order(self.extend({'id' => id}, orders[id]))
-      return self.extend({'info' => response}, order)
+      order = self.parse_order({'id' => id}.merge orders[id])
+      return {'info' => response}.merge order
     end
 
     def fetch_orders_by_ids(ids, symbol = nil, params = {})
@@ -1012,7 +1017,7 @@ module Ccxt
       for i in range(0, orderIds.length):
         id = orderIds[i]
         item = result[id]
-        order = self.parse_order(self.extend({'id' => id}, item))
+        order = self.parse_order({'id' => id}.merge item)
         orders.append(order)
       return orders
     end
@@ -1327,7 +1332,7 @@ module Ccxt
       elsif api == 'private'
         self.check_required_credentials()
         nonce = str(self.nonce())
-        body = self.urlencode(self.extend({'nonce' => nonce}, params))
+        body = self.urlencode({'nonce' => nonce}.merge params)
         auth = self.encode(nonce + body)
         hash = self.hash(auth, 'sha256', 'binary')
         binary = self.encode(url)
