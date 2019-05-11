@@ -817,9 +817,10 @@ module Ccxt
       priceIsDefined = !!price
       marketOrder = (type == 'market')
       limitOrder = (type == 'limit')
-      shouldIncludePrice = limitOrder or (not marketOrder and priceIsDefined)
+      shouldIncludePrice = limitOrder || (!marketOrder && priceIsDefined)
       if shouldIncludePrice
         order['price'] = self.price_to_precision(symbol, price)
+      end
       response = self.privatePostAddOrder(self.extend(order, params))
       id = self.safe_value(response['result'], 'txid')
       if id
