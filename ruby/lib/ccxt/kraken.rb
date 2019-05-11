@@ -1,5 +1,3 @@
-require 'ccxt/exchange'
-
 # import base64
 # import hashlib
 # import math
@@ -786,18 +784,19 @@ module Ccxt
         raise ExchangeNotAvailable(self.id + ' fetchBalance failed due to a malformed response ' + self.json(response))
       result = {'info' => balances}
       currencies = balances.keys
-      for c in range(0, currencies.length):
-        currency = currencies[c]
+      currencies.each do |currency|
         code = currency
-        if code in self.currencies_by_id
+        if self.currencies_by_id[code]
           code = self.currencies_by_id[code]['code']
         else
           # X-ISO4217-A3 standard currency codes
           if code[0] == 'X'
-            code = code[1:]
+            code = code[1..-1]
           elsif code[0] == 'Z'
-            code = code[1:]
+            code = code[1..-1]
+          end
           code = self.common_currency_code(code)
+        end
         balance = balances[currency].to_f
         account = {
           'free' => balance,
@@ -805,6 +804,7 @@ module Ccxt
           'total' => balance,
         }
         result[code] = account
+      end
       return self.parse_balance(result)
     end
 
@@ -885,12 +885,12 @@ module Ccxt
       quote = quoteId
       if base.length > 3
         if (base[0] == 'X') or (base[0] == 'Z')
-          base = base[1:]
+          base = base[1..-1]
         end
       end
       if quote.length > 3
         if (quote[0] == 'X') or (quote[0] == 'Z')
-          quote = quote[1:]
+          quote = quote[1..-1]
         end
       end
       base = self.common_currency_code(base)
@@ -987,7 +987,7 @@ module Ccxt
       result = []
       ids = orders.keys
       ids.each do |id|
-        order = {'id' => id}merge orders[id]
+        order = {'id' => id}.merge orders[id]
         result.append(self.parse_order(order, market))
       end
       return self.filter_by_since_limit(result, since, limit)
@@ -1268,7 +1268,7 @@ module Ccxt
       request = {
         'new' => 'true',
       }
-      response = self.fetch_deposit_address(code, request.merge(params)))
+      response = self.fetch_deposit_address(code, request.merge(params))
       address = self.safe_string(response, 'address')
       self.check_address(address)
       return {
@@ -1324,7 +1324,7 @@ module Ccxt
           'asset' => currency['id'],
           'amount' => amount,
           # 'address' => address,  # they don't allow withdrawals to direct addresses
-        }.merge params))
+        }.merge params)
         return {
           'info' => response,
           'id' => response['result'],
