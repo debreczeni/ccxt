@@ -1075,15 +1075,16 @@ module Ccxt
     def cancel_order(id, symbol = nil, params = {})
       self.load_markets()
       response = nil
-      try:
-        response = self.privatePostCancelOrder(self.extend({
-          'txid' => id,
-        }, params))
-      except Exception as e:
-        if self.last_http_response
-          if self.last_http_response.find('EOrder:Unknown order') >= 0
-            raise OrderNotFound(self.id + ' cancelOrder() error ' + self.last_http_response)
-        raise e
+      begin
+        response = self.privatePostCancelOrder({'txid' => id}.merge params)
+      rescue => ex
+        if self.last_http_response &&
+          self.last_http_response.match('EOrder:Unknown order')
+
+          raise OrderNotFound(self.id + ' cancelOrder() error ' + self.last_http_response)
+        end
+        raise ex
+      end
       return response
     end
 
