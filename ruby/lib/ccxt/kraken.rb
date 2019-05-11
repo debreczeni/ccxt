@@ -676,17 +676,18 @@ module Ccxt
       result = response['result']
       keys = result.keys
       items = []
-      for i in range(0, keys.length):
-        key = keys[i]
+      keys.each do |key|
         value = result[key]
         value['id'] = key
         items.append(value)
+      end
       return self.parse_ledger(items)
     end
 
     def fetch_ledger_entry(id, code = nil, params = {})
       items = self.fetchLedgerEntrysByIds([id], code, params)
       return items[0]
+    end
 
     def parse_trade(trade, market = nil)
       timestamp = nil
@@ -705,33 +706,35 @@ module Ccxt
       elsif marketId
         # delisted market ids go here
         market = self.get_delisted_market_by_id(marketId)
-      if market
-        symbol = market['symbol']
-      if 'ordertxid' in trade
+      end
+      symbol = market['symbol'] if market
+      if trade['ordertxid']
         order = trade['ordertxid']
         id = self.safe_string_2(trade, 'id', 'postxid')
-        timestamp = int(trade['time'] * 1000)
+        timestamp = (trade['time'] * 1000).to_i
         side = trade['type']
         type = trade['ordertype']
         price = self.safe_float(trade, 'price')
         amount = self.safe_float(trade, 'vol')
-        if 'fee' in trade
+        if trade['fee']
           currency = nil
-          if market
-            currency = market['quote']
+          currency = market['quote'] if market
           fee = {
             'cost' => self.safe_float(trade, 'fee'),
             'currency' => currency,
           }
+        end
       else
-        timestamp = int(trade[2] * 1000)
-        side = 'sell' if (trade[3] == 's') else 'buy'
-        type = 'limit' if (trade[4] == 'l') else 'market'
+        timestamp = (trade[2] * 1000).to_i
+        side = (trade[3] == 's') ? 'sell' : 'buy'
+        type =  (trade[4] == 'l') ? 'limit' : 'market'
         price = trade[0].to_f
         amount = trade[1].to_f
         tradeLength = trade.length
         if tradeLength > 6
           id = trade[6]  # artificially added as per  #1794
+        end
+      end
       return {
         'id' => id,
         'order' => order,
@@ -752,9 +755,7 @@ module Ccxt
       self.load_markets()
       market = self.market(symbol)
       id = market['id']
-      response = self.publicGetTrades(self.extend({
-        'pair' => id,
-      }, params))
+      response = self.publicGetTrades({'pair' => id}.merge params)
       #
       #     {
       #         "error": [],
@@ -770,8 +771,7 @@ module Ccxt
       trades = result[id]
       # trades is a sorted array: last(most recent trade) goes last
       length = trades.length
-      if length <= 0
-        return []
+      return [] if length <= 0
       lastTrade = trades[length - 1]
       lastTradeId = self.safe_string(result, 'last')
       lastTrade.append(lastTradeId)
