@@ -821,12 +821,11 @@ module Ccxt
       if shouldIncludePrice
         order['price'] = self.price_to_precision(symbol, price)
       end
-      response = self.privatePostAddOrder(self.extend(order, params))
+      response = self.privatePostAddOrder(order.merge params)
       id = self.safe_value(response['result'], 'txid')
-      if id
-        if isinstance(id, list)
-          length = id.length
-          id = id if (length > 1) else id[0]
+      if id && id.is_a?(Array)
+        id = id.length > 1 ? id : id[0]
+      end
       return {
         'id' => id,
         'info' => response,
