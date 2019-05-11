@@ -391,7 +391,7 @@ module Ccxt
         code = self.common_currency_code(self.safe_string(currency, 'altname'))
         precision = self.safe_integer(currency, 'decimals')
         # assumes all currencies are active except those listed above
-        active = not self.in_array(code, self.options['inactiveCurrencies'])
+        active = !self.options['inactiveCurrencies'].include?(code)
         result[code] = {
           'id' => id,
           'code' => code,
@@ -460,7 +460,7 @@ module Ccxt
         'pair' => market['id'],
       }
       request['count'] = limit if limit # 100
-      response = self.publicGetDepth(request.merge(params)))
+      response = self.publicGetDepth(request.merge(params))
       orderbook = response['result'][market['id']]
       return self.parse_order_book(orderbook)
     end
@@ -554,7 +554,7 @@ module Ccxt
       if since
         request['since'] = int((since - 1) / 1000)
       end
-      response = self.publicGetOHLC(request.merge(params)))
+      response = self.publicGetOHLC(request.merge(params))
       ohlcvs = response['result'][market['id']]
       return self.parse_ohlcvs(ohlcvs, market, timeframe, since, limit)
     end
@@ -636,7 +636,7 @@ module Ccxt
       if since
         request['start'] = (since / 1000).to_i
       end
-      response = self.privatePostLedgers(request.merge(params)))
+      response = self.privatePostLedgers(request.merge(params))
       # { error: [],
       #   result: {ledger: {'LPUAIB-TS774-UKHP7X' => {  refid: "A2B4HBV-L4MDIE-JU4N3N",
       #                                                   time:  1520103488.314,
@@ -1034,7 +1034,7 @@ module Ccxt
       if since
         request['start'] = int(since / 1000)
       end
-      response = self.privatePostTradesHistory(request.merge(params)))
+      response = self.privatePostTradesHistory(request.merge(params))
       #
       #     {
       #         "error": [],
@@ -1094,7 +1094,7 @@ module Ccxt
       if since
         request['start'] = (since / 1000).to_i
       end
-      response = self.privatePostOpenOrders(request.merge(params)))
+      response = self.privatePostOpenOrders(request.merge(params))
       orders = self.parse_orders(response['result']['open'], nil, since, limit)
 
       return orders if symbol.nil?
@@ -1107,7 +1107,7 @@ module Ccxt
       if since
         request['start'] = (since / 1000).to_i
       end
-      response = self.privatePostClosedOrders(request.merge(params)))
+      response = self.privatePostClosedOrders(request.merge(params))
       orders = self.parse_orders(response['result']['closed'], nil, since, limit)
 
       return orders if symbol.nil?
@@ -1220,7 +1220,7 @@ module Ccxt
       request = {
         'asset' => currency['id'],
       }
-      response = self.privatePostDepositStatus(request.merge(params)))
+      response = self.privatePostDepositStatus(request.merge(params))
       #
       #     { error: [],
       #       result: [{method: "Ether(Hex)",
@@ -1247,7 +1247,7 @@ module Ccxt
       request = {
         'asset' => currency['id'],
       }
-      response = self.privatePostWithdrawStatus(request.merge(params)))
+      response = self.privatePostWithdrawStatus(request.merge(params))
       #
       #     { error: [],
       #       result: [{method: "Ether",
@@ -1298,7 +1298,7 @@ module Ccxt
         'asset' => currency['id'],
         'method' => deposit_method,
       }
-      response = self.privatePostDepositAddresses(request.merge(params)))  # overwrite methods
+      response = self.privatePostDepositAddresses(request.merge(params))  # overwrite methods
       result = response['result']
       numResults = result.length
       if numResults < 1
