@@ -468,13 +468,11 @@ module Ccxt
     def parse_ticker(ticker, market = nil)
       timestamp = self.milliseconds()
       symbol = nil
-      if market
-        symbol = market['symbol']
+      symbol = market['symbol'] if market
       baseVolume = ticker['v'][1].to_f
       vwap = ticker['p'][1].to_f
       quoteVolume = nil
-      if baseVolume is not nil and vwap is not nil
-        quoteVolume = baseVolume * vwap
+      quoteVolume = baseVolume * vwap if baseVolume && vwap
       last = ticker['c'][0].to_f
       return {
         'symbol' => symbol,
@@ -503,16 +501,14 @@ module Ccxt
     def fetch_tickers(symbols = nil, params = {})
       self.load_markets()
       pairs = []
-      for s in range(0, len(self.symbols)):
-        symbol = self.symbols[s]
+      self.symbols.each do |symbol|
         market = self.markets[symbol]
-        if market['active']
-          if not market['darkpool']
-            pairs.append(market['id'])
-      filter = ','.join(pairs)
-      response = self.publicGetTicker(self.extend({
-        'pair' => filter,
-      }, params))
+        if market['active'] && !market['darkpool']
+          pairs.append(market['id'])
+        end
+      end
+      filter = pairs.join ','
+      response = self.publicGetTicker({'pair' => filter}.merge params)
       tickers = response['result']
       ids = tickers.keys()
       result = {}
