@@ -1007,18 +1007,18 @@ module Ccxt
 
     def fetch_orders_by_ids(ids, symbol = nil, params = {})
       self.load_markets()
-      response = self.privatePostQueryOrders(self.extend({
+      response = self.privatePostQueryOrders({
         'trades' => true,  # whether or not to include trades in output(optional, default false)
-        'txid' => ','.join(ids),  # comma delimited list of transaction ids to query info about(20 maximum)
-      }, params))
+        'txid' => ids.join(','),  # comma delimited list of transaction ids to query info about(20 maximum)
+      }.merge params)
       result = self.safe_value(response, 'result', {})
       orders = []
       orderIds = result.keys
-      for i in range(0, orderIds.length):
-        id = orderIds[i]
+      orderIds.each do |id|
         item = result[id]
         order = self.parse_order({'id' => id}.merge item)
         orders.append(order)
+      end
       return orders
     end
 
@@ -1033,6 +1033,7 @@ module Ccxt
       }
       if since
         request['start'] = int(since / 1000)
+      end
       response = self.privatePostTradesHistory(request.merge(params)))
       #
       #     {
@@ -1061,11 +1062,13 @@ module Ccxt
       #
       trades = response['result']['trades']
       ids = trades.keys
-      for i in range(0, ids.length):
-        trades[ids[i]]['id'] = ids[i]
+      ids.each do |id|
+        trades[id]['id'] = id
+      end
       result = self.parse_trades(trades, nil, since, limit)
-      if symbol.nil?
-        return result
+
+      return result if symbol.nil?
+
       return self.filter_by_symbol(result, symbol)
     end
 
