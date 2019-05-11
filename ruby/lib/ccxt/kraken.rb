@@ -431,12 +431,17 @@ module Ccxt
       tiers = self.fees['trading']['tiers']
       taker = tiers['taker'][1]
       maker = tiers['maker'][1]
-      for i in range(0, len(tiers['taker'])):
-        if tradedVolume >= tiers['taker'][i][0]
-          taker = tiers['taker'][i][1]
-      for i in range(0, len(tiers['maker'])):
-        if tradedVolume >= tiers['maker'][i][0]
-          maker = tiers['maker'][i][1]
+      tiers['taker'].each do |taker_fees|
+        if tradedVolume >= taker_fees[0]
+          taker = taker_fees[1]
+        end
+      end
+      tiers['maker'].each do |maker_fees|
+        if tradedVolume >= maker_fees[0]
+          maker = maker_fees[1]
+        end
+      end
+
       return {
         'info' => response,
         'maker' => maker,
@@ -449,12 +454,13 @@ module Ccxt
       market = self.market(symbol)
       if market['darkpool']
         raise ExchangeError(self.id + ' does not provide an order book for darkpool symbol ' + symbol)
+      end
+
       request = {
         'pair' => market['id'],
       }
-      if limit is not nil
-        request['count'] = limit  # 100
-      response = self.publicGetDepth(self.extend(request, params))
+      request['count'] = limit if limit # 100
+      response = self.publicGetDepth(request.merge(params)))
       orderbook = response['result'][market['id']]
       return self.parse_order_book(orderbook)
     end
@@ -552,7 +558,7 @@ module Ccxt
       }
       if since is not nil
         request['since'] = int((since - 1) / 1000)
-      response = self.publicGetOHLC(self.extend(request, params))
+      response = self.publicGetOHLC(request.merge(params)))
       ohlcvs = response['result'][market['id']]
       return self.parse_ohlcvs(ohlcvs, market, timeframe, since, limit)
     end
@@ -630,7 +636,7 @@ module Ccxt
         request['asset'] = currency['id']
       if since is not nil
         request['start'] = int(since / 1000)
-      response = self.privatePostLedgers(self.extend(request, params))
+      response = self.privatePostLedgers(request.merge(params)))
       # { error: [],
       #   result: {ledger: {'LPUAIB-TS774-UKHP7X' => {  refid: "A2B4HBV-L4MDIE-JU4N3N",
       #                                                   time:  1520103488.314,
@@ -1016,7 +1022,7 @@ module Ccxt
       }
       if since is not nil
         request['start'] = int(since / 1000)
-      response = self.privatePostTradesHistory(self.extend(request, params))
+      response = self.privatePostTradesHistory(request.merge(params)))
       #
       #     {
       #         "error": [],
@@ -1072,7 +1078,7 @@ module Ccxt
       request = {}
       if since is not nil
         request['start'] = int(since / 1000)
-      response = self.privatePostOpenOrders(self.extend(request, params))
+      response = self.privatePostOpenOrders(request.merge(params)))
       orders = self.parse_orders(response['result']['open'], nil, since, limit)
       if symbol is nil
         return orders
@@ -1084,7 +1090,7 @@ module Ccxt
       request = {}
       if since is not nil
         request['start'] = int(since / 1000)
-      response = self.privatePostClosedOrders(self.extend(request, params))
+      response = self.privatePostClosedOrders(request.merge(params)))
       orders = self.parse_orders(response['result']['closed'], nil, since, limit)
       if symbol is nil
         return orders
@@ -1200,7 +1206,7 @@ module Ccxt
       request = {
         'asset' => currency['id'],
       }
-      response = self.privatePostDepositStatus(self.extend(request, params))
+      response = self.privatePostDepositStatus(request.merge(params)))
       #
       #     { error: [],
       #       result: [{method: "Ether(Hex)",
@@ -1226,7 +1232,7 @@ module Ccxt
       request = {
         'asset' => currency['id'],
       }
-      response = self.privatePostWithdrawStatus(self.extend(request, params))
+      response = self.privatePostWithdrawStatus(request.merge(params)))
       #
       #     { error: [],
       #       result: [{method: "Ether",
@@ -1247,7 +1253,7 @@ module Ccxt
       request = {
         'new' => 'true',
       }
-      response = self.fetch_deposit_address(code, self.extend(request, params))
+      response = self.fetch_deposit_address(code, request.merge(params)))
       address = self.safe_string(response, 'address')
       self.check_address(address)
       return {
@@ -1274,7 +1280,7 @@ module Ccxt
         'asset' => currency['id'],
         'method' => method,
       }
-      response = self.privatePostDepositAddresses(self.extend(request, params))  # overwrite methods
+      response = self.privatePostDepositAddresses(request.merge(params)))  # overwrite methods
       result = response['result']
       numResults = result.length
       if numResults < 1
