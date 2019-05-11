@@ -260,7 +260,7 @@ module Ccxt
           pieces = amountAndCode.split(' ')
           numPieces = pieces.length
           if numPieces == 2
-            amount = float(pieces[0])
+            amount = pieces[0].to_f
             code = self.common_currency_code(pieces[1])
             result[code] = amount
           end
@@ -283,12 +283,12 @@ module Ccxt
         quote = quoteId
         if base.length > 3
           if (base[0] == 'X') or (base[0] == 'Z')
-            base = base[1:]
+            base = base[1..-1]
           end
         end
         if quote.length > 3
           if (quote[0] == 'X') or (quote[0] == 'Z')
-            quote = quote[1:]
+            quote = quote[1..-1]
           end
         end
         base = self.common_currency_code(base)
@@ -297,7 +297,7 @@ module Ccxt
         symbol = darkpool ? market['altname'] : (base + '/' + quote)
         maker = nil
         if market['fees_maker']
-          maker = float(market['fees_maker'][0][1]) / 100
+          maker = market['fees_maker'][0][1].to_f / 100
         end
         precision = {
           'amount' => market['lot_decimals'],
@@ -318,7 +318,7 @@ module Ccxt
           'info' => market,
           'altname' => market['altname'],
           'maker' => maker,
-          'taker' => float(market['fees'][0][1]) / 100,
+          'taker' => market['fees'][0][1].to_f / 100,
           'active' => true,
           'precision' => precision,
           'limits' => {
@@ -360,8 +360,8 @@ module Ccxt
       markets = [
         # {'id' => 'XXLMZEUR', 'symbol' => 'XLM/EUR', 'base' => 'XLM', 'quote' => 'EUR', 'altname' => 'XLMEUR'},
       ]
-      for i in range(0, markets.length):
-        result.append(self.extend(defaults, markets[i]))
+      markets.each do |market|
+        result.append(defaults.merge(market))
       return result
     end
 
@@ -462,21 +462,21 @@ module Ccxt
       symbol = nil
       if market
         symbol = market['symbol']
-      baseVolume = float(ticker['v'][1])
-      vwap = float(ticker['p'][1])
+      baseVolume = ticker['v'][1].to_f
+      vwap = ticker['p'][1].to_f
       quoteVolume = nil
       if baseVolume is not nil and vwap is not nil
         quoteVolume = baseVolume * vwap
-      last = float(ticker['c'][0])
+      last = ticker['c'][0].to_f
       return {
         'symbol' => symbol,
         'timestamp' => timestamp,
         'datetime' => self.iso8601(timestamp),
-        'high' => float(ticker['h'][1]),
-        'low' => float(ticker['l'][1]),
-        'bid' => float(ticker['b'][0]),
+        'high' => ticker['h'][1].to_f,
+        'low' => ticker['l'][1].to_f,
+        'bid' => ticker['b'][0].to_f,
         'bidVolume' => nil,
-        'ask' => float(ticker['a'][0]),
+        'ask' => ticker['a'][0].to_f,
         'askVolume' => nil,
         'vwap' => vwap,
         'open' => self.safe_float(ticker, 'o'),
@@ -533,11 +533,11 @@ module Ccxt
     def parse_ohlcv(ohlcv, market = nil, timeframe = '1m', since = nil, limit = nil)
       return [
         ohlcv[0] * 1000,
-        float(ohlcv[1]),
-        float(ohlcv[2]),
-        float(ohlcv[3]),
-        float(ohlcv[4]),
-        float(ohlcv[6]),
+        ohlcv[1].to_f,
+        ohlcv[2].to_f,
+        ohlcv[3].to_f,
+        ohlcv[4].to_f,
+        ohlcv[6].to_f,
       ]
     end
 
@@ -721,8 +721,8 @@ module Ccxt
         timestamp = int(trade[2] * 1000)
         side = 'sell' if (trade[3] == 's') else 'buy'
         type = 'limit' if (trade[4] == 'l') else 'market'
-        price = float(trade[0])
-        amount = float(trade[1])
+        price = trade[0].to_f
+        amount = trade[1].to_f
         tradeLength = trade.length
         if tradeLength > 6
           id = trade[6]  # artificially added as per  #1794
@@ -792,7 +792,7 @@ module Ccxt
           elif code[0] == 'Z'
             code = code[1:]
           code = self.common_currency_code(code)
-        balance = float(balances[currency])
+        balance = balances[currency].to_f
         account = {
           'free' => balance,
           'used' => 0.0,
