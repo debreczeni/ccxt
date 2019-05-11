@@ -699,7 +699,7 @@ module Ccxt
       symbol = nil
       if foundMarket
         market = foundMarket
-      elif marketId
+      elsif marketId
         # delisted market ids go here
         market = self.get_delisted_market_by_id(marketId)
       if market
@@ -792,7 +792,7 @@ module Ccxt
           # X-ISO4217-A3 standard currency codes
           if code[0] == 'X'
             code = code[1:]
-          elif code[0] == 'Z'
+          elsif code[0] == 'Z'
             code = code[1:]
           code = self.common_currency_code(code)
         balance = balances[currency].to_f
@@ -951,7 +951,7 @@ module Ccxt
           }
           if flags.find('fciq') >= 0
             fee['currency'] = market['quote']
-          elif flags.find('fcib') >= 0
+          elsif flags.find('fcib') >= 0
             fee['currency'] = market['base']
       status = self.parse_order_status(self.safe_string(order, 'status'))
       return {
@@ -1321,7 +1321,7 @@ module Ccxt
       if api == 'public'
         if params
           url += '?' + self.urlencode(params)
-      elif api == 'private'
+      elsif api == 'private'
         self.check_required_credentials()
         nonce = str(self.nonce())
         body = self.urlencode(self.extend({'nonce' => nonce}, params))
