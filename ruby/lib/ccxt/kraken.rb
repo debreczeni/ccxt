@@ -553,6 +553,7 @@ module Ccxt
       }
       if since
         request['since'] = int((since - 1) / 1000)
+      end
       response = self.publicGetOHLC(request.merge(params)))
       ohlcvs = response['result'][market['id']]
       return self.parse_ohlcvs(ohlcvs, market, timeframe, since, limit)
@@ -591,12 +592,14 @@ module Ccxt
         amount = abs(amount)
       else
         direction = 'in'
+      end
       time = self.safe_float(item, 'time')
       timestamp = nil
       datetime = nil
       if time
         timestamp = int(time * 1000)
         datetime = self.iso8601(timestamp)
+      end
       fee = {
         'cost' => self.safe_float(item, 'fee'),
         'currency' => code,
@@ -629,8 +632,10 @@ module Ccxt
       if code
         currency = self.currency(code)
         request['asset'] = currency['id']
+      end
       if since
-        request['start'] = int(since / 1000)
+        request['start'] = (since / 1000).to_i
+      end
       response = self.privatePostLedgers(request.merge(params)))
       # { error: [],
       #   result: {ledger: {'LPUAIB-TS774-UKHP7X' => {  refid: "A2B4HBV-L4MDIE-JU4N3N",
@@ -645,11 +650,11 @@ module Ccxt
       ledger = self.safe_value(result, 'ledger', {})
       keys = ledger.keys
       items = []
-      for i in range(0, keys.length):
-        key = keys[i]
+      keys.each do |key|
         value = ledger[key]
         value['id'] = key
         items.append(value)
+      end
       return self.parse_ledger(items, currency, since, limit)
     end
 
@@ -657,9 +662,7 @@ module Ccxt
       # https://www.kraken.com/features/api#query-ledgers
       self.load_markets()
       ids = ','.join(ids)
-      request = self.extend({
-        'id' => ids,
-      }, params)
+      request = {'id' => ids}.merge params
       response = self.privatePostQueryLedgers(request)
       # { error: [],
       #   result: {'LPUAIB-TS774-UKHP7X' => {  refid: "A2B4HBV-L4MDIE-JU4N3N",
