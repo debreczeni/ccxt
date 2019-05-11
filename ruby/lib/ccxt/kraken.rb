@@ -1366,28 +1366,33 @@ module Ccxt
     end
 
     def handle_errors(code, reason, url, method, headers, body, response)
-      if code == 520
+      case
+      when code == 520
         raise ExchangeNotAvailable(self.id + ' ' + str(code) + ' ' + reason)
-      if body.find('Invalid order') >= 0
+      when body.match('Invalid order')
         raise InvalidOrder(self.id + ' ' + body)
-      if body.find('Invalid nonce') >= 0
+      when body.match('Invalid nonce')
         raise InvalidNonce(self.id + ' ' + body)
-      if body.find('Insufficient funds') >= 0
+      when body.match('Insufficient funds')
         raise InsufficientFunds(self.id + ' ' + body)
-      if body.find('Cancel pending') >= 0
+      when body.match('Cancel pending')
         raise CancelPending(self.id + ' ' + body)
-      if body.find('Invalid arguments:volume') >= 0
+      when body.match('Invalid arguments:volume')
         raise InvalidOrder(self.id + ' ' + body)
-      if body[0] == '{'
-        if not isinstance(response, basestring)
-          if 'error' in response
-            numErrors = len(response['error'])
-            if numErrors
-              message = self.id + ' ' + self.json(response)
-              for i in range(0, len(response['error'])):
-                if response['error'][i] in self.exceptions
-                  raise self.exceptions[response['error'][i]](message)
-              raise ExchangeError(message)
+      when body[0] == '{'
+        if not response.is_a?(String) &&
+          response['error'] &&
+          !response['error'].empty?
+
+          message = self.id + ' ' + self.json(response)
+          response['error'].each do |error|
+            if self.exceptions[error]
+              raise self.exceptions[error], message
+            end
+          end
+          raise ExchangeError(message)
+        end
+      end
     end
   end
 end
