@@ -21,7 +21,7 @@ module Ccxt
     attr_accessor :marketsByAltname
 
     def describe()
-      return self.deep_extend(super, {
+      return self.class.deep_extend(super, {
         'id' => 'kraken',
         'name' => 'Kraken',
         'countries' => ['US'],

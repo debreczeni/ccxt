@@ -1,7 +1,7 @@
 module Ccxt
   class Bitmex < Exchange
     def describe
-      return self.deep_extend(super, {
+      return self.class.deep_extend(super, {
         'id' => 'bitmex',
         'name' => 'BitMEX',
         'countries' => [ 'SC' ], ## Seychelles
@@ -279,7 +279,7 @@ module Ccxt
 
     def fetch_order(id, symbol=nil, params={})
       filter = {'filter': {'orderID': id}}
-      result = self.fetch_orders(symbol, nil, nil, self.deep_extend(filter, params))
+      result = self.fetch_orders(symbol, nil, nil, self.class.deep_extend(filter, params))
       numResults = result.length
       if numResults == 1
         return result[0]
@@ -301,7 +301,7 @@ module Ccxt
       if limit != nil
         request['count'] = limit
       end
-      request = self.deep_extend(request, params)
+      request = self.class.deep_extend(request, params)
       # why the hassle? urlencode in python is kinda broken for nested dicts.
       # E.g. self.urlencode({"filter": {"open": true}}) will return "filter={'open':+true}"
       # Bitmex doesn't like that. Hence resorting to self hack.
@@ -314,7 +314,7 @@ module Ccxt
 
     def fetch_open_orders(symbol=nil, since=nil, limit=nil, params={})
       filter_params = {'filter': {'open': true}}
-      return self.fetch_orders(symbol, since, limit, self.deep_extend(filter_params, params))
+      return self.fetch_orders(symbol, since, limit, self.class.deep_extend(filter_params, params))
     end
 
     def fetch_closed_orders(symbol=nil, since=nil, limit=nil, params={})
@@ -337,7 +337,7 @@ module Ccxt
       if limit != nil
         request['count'] = limit
       end
-      request = self.deep_extend(request, params)
+      request = self.class.deep_extend(request, params)
       # why the hassle? urlencode in python is kinda broken for nested dicts.
       # E.g. self.urlencode({"filter": {"open": true}}) will return "filter={'open':+true}"
       # Bitmex doesn't like that. Hence resorting to self hack.

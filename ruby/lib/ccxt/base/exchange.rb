@@ -178,10 +178,10 @@ module Ccxt
         'BCHSV'=> 'BSV',
       }
 
-      settings = self.deep_extend(self.describe(), config)
+      settings = self.class.deep_extend(self.describe(), config)
       settings.each do |key, value|
         if self.instance_variable_defined?("@#{key}") && self.instance_variable_get("@#{key}").is_a?(Hash)
-            self.instance_variable_set("@#{key}", self.deep_extend(self.send(key), value))
+            self.instance_variable_set("@#{key}", self.class.deep_extend(self.send(key), value))
         else
           send "#{key}=", value
         end
@@ -267,7 +267,7 @@ module Ccxt
           return self.loaded_fees
         end
       end
-      self.loaded_fees = self.deep_extend(self.loaded_fees, self.fetch_fees())
+      self.loaded_fees = self.class.deep_extend(self.loaded_fees, self.fetch_fees())
       return self.loaded_fees
     end
 
@@ -368,7 +368,7 @@ module Ccxt
         if reload or not(self.options.keys.include?('limitsLoaded'))
           response = self.fetch_trading_limits(symbols)
           symbols.each do |symbol|
-            self.markets[symbol] = self.deep_extend(self.markets[symbol], response[symbol])
+            self.markets[symbol] = self.class.deep_extend(self.markets[symbol], response[symbol])
           end
           self.options['limitsLoaded'] = self.milliseconds
         end
@@ -577,7 +577,7 @@ module Ccxt
       self.symbols = self.markets.keys.sort
       self.ids = self.markets_by_id.keys.sort
       if currencies_to_set
-        self.currencies = self.deep_extend(currencies_to_set, self.currencies)
+        self.currencies = self.class.deep_extend(currencies_to_set, self.currencies)
       else
         base_currencies = values.select {|market| market['base']}.map do |market|
           {
@@ -598,7 +598,7 @@ module Ccxt
           }
         end
         currencies_to_set = self.sort_by(base_currencies + quote_currencies, 'code')
-        self.currencies = self.deep_extend(self.index_by(currencies_to_set, 'code'), self.currencies)
+        self.currencies = self.class.deep_extend(self.index_by(currencies_to_set, 'code'), self.currencies)
       end
       self.currencies_by_id = self.index_by(self.currencies.values, 'id')
       return self.markets
@@ -831,7 +831,7 @@ module Ccxt
       end
     end
 
-  #  class << self
+   class << self
 
       ### THESE ARE REQUIRED TO TRANSPILE THE JAVASCRIPT FILES
 
@@ -959,7 +959,7 @@ module Ccxt
             result = {} if not result.is_a?(Hash)
             arg.keys.each do |k|
               target = result.has_key?(k) ? result[k] : nil
-              result[k] = self.deep_extend(target, arg[k])
+              result[k] = deep_extend(target, arg[k])
             end
           else
             result = arg
@@ -1268,7 +1268,7 @@ module Ccxt
       end
 
       # Ruby default capitalize will capitalize the first letter and lower the others.
-      def capitalize(string)
+      def self.capitalize(string)
         if string.length > 1
           return (string[0].upcase + string[1..-1])
         else
@@ -1284,7 +1284,7 @@ module Ccxt
           sleep(delay / 1000.0)
         end
       end
-  #  end
+   end
 
     def common_currency_code(currency)
       if not self.substituteCommonCurrencyCodes
