@@ -381,7 +381,7 @@ module Ccxt
     end
 
 
-    def parse_timeframe(timeframe)
+    def self.parse_timeframe(timeframe)
       amount = timeframe[0..-1].to_i
       unit = timeframe[-1]
       case unit
