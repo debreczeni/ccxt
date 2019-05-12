@@ -465,7 +465,7 @@ module Ccxt
     end
 
     def parse_ticker(ticker, market = nil)
-      timestamp = self.milliseconds()
+      timestamp = self.class.milliseconds()
       symbol = nil
       symbol = market['symbol'] if market
       baseVolume = ticker['v'][1].to_f
@@ -476,7 +476,7 @@ module Ccxt
       return {
         'symbol' => symbol,
         'timestamp' => timestamp,
-        'datetime' => self.iso8601(timestamp),
+        'datetime' => self.class.iso8601(timestamp),
         'high' => ticker['h'][1].to_f,
         'low' => ticker['l'][1].to_f,
         'bid' => ticker['b'][0].to_f,
@@ -597,7 +597,7 @@ module Ccxt
       datetime = nil
       if time
         timestamp = (time * 1000).to_i
-        datetime = self.iso8601(timestamp)
+        datetime = self.class.iso8601(timestamp)
       end
       fee = {
         'cost' => self.class.safe_float(item, 'fee'),
@@ -741,7 +741,7 @@ module Ccxt
         'order' => order,
         'info' => trade,
         'timestamp' => timestamp,
-        'datetime' => self.iso8601(timestamp),
+        'datetime' => self.class.iso8601(timestamp),
         'symbol' => symbol,
         'type' => type,
         'side' => side,
@@ -784,7 +784,7 @@ module Ccxt
       response = self.privatePostBalance(params)
       balances = self.class.safe_value(response, 'result')
       if balances.nil?
-        raise ExchangeNotAvailable, self.id + ' fetchBalance failed due to a malformed response ' + self.json(response)
+        raise ExchangeNotAvailable, self.id + ' fetchBalance failed due to a malformed response ' + self.class.json(response)
       end
       result = {'info' => balances}
       currencies = balances.keys
@@ -970,7 +970,7 @@ module Ccxt
         'id' => order['id'],
         'info' => order,
         'timestamp' => timestamp,
-        'datetime' => self.iso8601(timestamp),
+        'datetime' => self.class.iso8601(timestamp),
         'lastTradeTimestamp' => nil,
         'status' => status,
         'symbol' => symbol,
@@ -1198,7 +1198,7 @@ module Ccxt
         'updated' => nil,
         'txid' => txid,
         'timestamp' => timestamp,
-        'datetime' => self.iso8601(timestamp),
+        'datetime' => self.class.iso8601(timestamp),
         'fee' => {
           'currency' => code,
           'cost' => feeCost,
@@ -1212,7 +1212,7 @@ module Ccxt
         parsed_tx = self.parse_transaction({'type' => type}.merge transaction)
         result << parsed_tx
       end
-      return self.filterByCurrencySinceLimit(result, code, since, limit)
+      return self.filter_by_currency_since_limit(result, code, since, limit)
     end
 
     def fetch_deposits(code = nil, since = nil, limit = nil, params = {})
@@ -1389,7 +1389,7 @@ module Ccxt
           response['error'] &&
           !response['error'].empty?
 
-          message = self.id + ' ' + self.json(response)
+          message = self.id + ' ' + self.class.json(response)
           response['error'].each do |error|
             if self.exceptions[error]
               raise self.exceptions[error], message

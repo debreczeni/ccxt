@@ -276,7 +276,7 @@ module Ccxt
       # currencies are returned as a dict
       # this is for historical reasons
       # and may be changed for consistency later
-      return self.to_array self.markets
+      return self.class.to_array self.markets
     end
 
     def fetch_currencies(params = {})
@@ -370,7 +370,7 @@ module Ccxt
           symbols.each do |symbol|
             self.markets[symbol] = self.class.deep_extend(self.markets[symbol], response[symbol])
           end
-          self.options['limitsLoaded'] = self.milliseconds
+          self.options['limitsLoaded'] = self.class.milliseconds
         end
       end
       return self.markets
@@ -441,7 +441,7 @@ module Ccxt
     end
 
     def purge_cached_orders(before)
-      orders = self.to_array(self.orders)
+      orders = self.class.to_array(self.orders)
       orders = orders.select{|order| (order['status'] == 'open') || (order['timestamp'] >= before)}
       self.orders = self.class.index_by(orders, 'id')
       return self.orders
@@ -476,7 +476,7 @@ module Ccxt
     end
 
     def parse_ohlcvs(ohlcvs, market = nil, timeframe = '1m', since = nil, limit = nil)
-      ohlcvs = self.to_array(ohlcvs)
+      ohlcvs = self.class.to_array(ohlcvs)
       result = []
 
       ohlcvs.each do |o|
@@ -486,7 +486,7 @@ module Ccxt
         continue if since && (ohlcv[0] < since)
         result.append(ohlcv)
       end
-      return self.sort_by(result, 0)
+      return self.class.sort_by(result, 0)
     end
 
     def parse_trading_view_ohlcv(ohlcvs, market=nil, timeframe='1m', since=nil, limit=nil)
@@ -524,8 +524,8 @@ module Ccxt
     def fetch_l2_order_book(symbol, limit = nil, params = {})
       orderbook = self.fetch_order_book(symbol, limit, params)
       orderbook.merge(
-        'bids' => self.sort_by(self.aggregate(orderbook['bids']), 0, true),
-        'asks' => self.sort_by(self.aggregate(orderbook['asks']), 0),
+        'bids' => self.class.sort_by(self.class.aggregate(orderbook['bids']), 0, true),
+        'asks' => self.class.sort_by(self.class.aggregate(orderbook['asks']), 0),
       )
     end
 
@@ -533,16 +533,16 @@ module Ccxt
       bids = if orderbook[bids_key] && orderbook[bids_key].is_a?(Array)
         self.parse_bids_asks(orderbook[bids_key], price_key, amount_key)
       else [] end
-      bids = self.sort_by(bids, 0, true)
+      bids = self.class.sort_by(bids, 0, true)
       asks = if orderbook[asks_key] && orderbook[asks_key].is_a?(Array)
         self.parse_bids_asks(orderbook[asks_key], price_key, amount_key)
       else [] end
-      asks = self.sort_by(asks, 0)
+      asks = self.class.sort_by(asks, 0)
       {
         'bids' => bids,
         'asks' => asks,
         'timestamp' => timestamp,
-        'datetime' => timestamp ? self.iso8601(timestamp) : nil,
+        'datetime' => timestamp ? self.class.iso8601(timestamp) : nil,
         'nonce' => nil,
       }
     end
@@ -597,7 +597,7 @@ module Ccxt
               (market['precision'] && market['precision']['amount']) || 8,
           }
         end
-        currencies_to_set = self.sort_by(base_currencies + quote_currencies, 'code')
+        currencies_to_set = self.class.sort_by(base_currencies + quote_currencies, 'code')
         self.currencies = self.class.deep_extend(self.class.index_by(currencies_to_set, 'code'), self.currencies)
       end
       self.currencies_by_id = self.class.index_by(self.currencies.values, 'id')
@@ -605,7 +605,7 @@ module Ccxt
     end
 
     def build_ohlcv(trades, timeframe = '1m', since = nil, limit = nil)
-      ms = self.parse_timeframe(timeframe) * 1000
+      ms = self.class.parse_timeframe(timeframe) * 1000
       ohlcvs = []
       high, low, close, volume = [2, 3, 4, 5]
       num_trades = trades.size
@@ -1094,7 +1094,7 @@ module Ccxt
       end
 
       def safe_float_2(hash, key1, key2, default_value = nil)
-        return self.class.safe_either(method(:safe_float), hash, key1, key2, default_value)
+        return self.safe_either(method(:safe_float), hash, key1, key2, default_value)
       end
 
       def safe_integer(hash, key, default_value = nil)
@@ -1107,7 +1107,7 @@ module Ccxt
       end
 
       def safe_integer_2(hash, key1, key2, default_value = nil)
-        return self.class.safe_either(method(:safe_integer), hash, key1, key2, default_value)
+        return self.safe_either(method(:safe_integer), hash, key1, key2, default_value)
       end
 
       def safe_string(hash, key, default_value = nil)
@@ -1120,7 +1120,7 @@ module Ccxt
       end
 
       def safe_string_2(hash, key1, key2, default_value = nil)
-        return self.class.safe_either(method(:safe_string), hash, key1, key2, default_value)
+        return self.safe_either(method(:safe_string), hash, key1, key2, default_value)
       end
 
       def safe_value(hash, key, default_value = nil)
@@ -1133,12 +1133,12 @@ module Ccxt
       end
 
       def safe_value_2(hash, key1, key2, default_value = nil)
-        return self.class.safe_either(method(:safe_string), hash, key1, key2, default_value)
+        return self.safe_either(method(:safe_string), hash, key1, key2, default_value)
       end
 
       def safe_currency_code(data, key, currency=nil)
         code = nil
-        currency_id = self.class.safe_string(data, key)
+        currency_id = self.safe_string(data, key)
         if self.currencies_by_id.include?(currency_id)
           currency = self.currencies_by_id[currency_id]
         else
@@ -1284,7 +1284,7 @@ module Ccxt
           sleep(delay / 1000.0)
         end
       end
-   end
+    end
 
     def common_currency_code(currency)
       if not self.substituteCommonCurrencyCodes
@@ -1471,39 +1471,39 @@ module Ccxt
     end
 
     def parse_trades(trades, market = nil, since = nil, limit = nil)
-      array = self.to_array(trades)
+      array = self.class.to_array(trades)
       array = array.collect{|trade| self.parse_trade(trade, market)}
-      array = self.sort_by(array, 'timestamp')
+      array = self.class.sort_by(array, 'timestamp')
       symbol = market ? market['symbol'] : nil
       return self.filter_by_symbol_since_limit(array, symbol, since, limit)
     end
 
     def parse_ledger(data, currency = nil, since = nil, limit = nil)
-      array = self.to_array(data)
+      array = self.class.to_array(data)
       array = array.collect{|item| self.parse_ledger_entry(item, currency)}
-      array = self.sort_by(array, 'timestamp')
+      array = self.class.sort_by(array, 'timestamp')
       code = currency ? currency['code'] : nil
       return self.filter_by_currency_since_limit(array, code, since, limit)
     end
 
     def parse_transactions(transactions, currency = nil, since = nil, limit = nil, params = {})
-      array = self.to_array(transactions)
+      array = self.class.to_array(transactions)
       array = array.collect{|transaction| self.parse_transaction(transaction, currency)}
-      array = self.sort_by(array, 'timestamp')
+      array = self.class.sort_by(array, 'timestamp')
       code = currency ? currency['code'] : nil
       return self.filter_by_currency_since_limit(array, code, since, limit)
     end
 
     def parse_orders(orders, market = nil, since = nil, limit = nil)
-      array = self.to_array(orders)
+      array = self.class.to_array(orders)
       array = array.collect{|order| self.parse_order(order, market)}
-      array = self.sort_by(array, 'timestamp')
+      array = self.class.sort_by(array, 'timestamp')
       symbol = market ? market['symbol'] : nil
       return self.filter_by_symbol_since_limit(array, symbol, since, limit)
     end
 
     def filter_by_value_since_limit(array, field, value = nil, since = nil, limit = nil)
-      array = self.to_array(array)
+      array = self.class.to_array(array)
       if value
         array = array.select{|entry| entry[field] == value}
       end
@@ -1525,7 +1525,7 @@ module Ccxt
     end
 
     def filter_by_since_limit(array, since = nil, limit = nil)
-      array = self.to_array(array)
+      array = self.class.to_array(array)
       if since
         array = array.select{|entry| entry['timestamp'] >= since}
       end
@@ -1536,7 +1536,7 @@ module Ccxt
     end
 
     def filter_by_symbol(array, symbol = nil)
-      array = self.to_array(array)
+      array = self.class.to_array(array)
       if symbol
         return array.select{|entry| entry['symbol'] == symbol}
       end
@@ -1545,7 +1545,7 @@ module Ccxt
 
     def filter_by_array(objects, key, values = nil, indexed = true)
 
-      objects = self.to_array(objects)
+      objects = self.class.to_array(objects)
 
       # return all of them if no values were passed in
       if values.nil?

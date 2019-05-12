@@ -170,10 +170,10 @@ module Ccxt
         lotSize = self.class.safe_float(market, 'lotSize')
         tickSize = self.class.safe_float(market, 'tickSize')
         if lotSize != nil
-          precision['amount'] = self.precision_from_string(self.truncate_to_string(lotSize, 16))
+          precision['amount'] = self.precision_from_string(self.class.truncate_to_string(lotSize, 16))
         end
         if tickSize != nil
-          precision['price'] = self.precision_from_string(self.truncate_to_string(tickSize, 16))
+          precision['price'] = self.precision_from_string(self.class.truncate_to_string(tickSize, 16))
         end
         limits = {
           'amount' => {
@@ -272,8 +272,8 @@ module Ccxt
           result[side].append([price, amount])
         end
       end
-      result['bids'] = self.sort_by(result['bids'], 0, true)
-      result['asks'] = self.sort_by(result['asks'], 0)
+      result['bids'] = self.class.sort_by(result['bids'], 0, true)
+      result['asks'] = self.class.sort_by(result['asks'], 0)
       return result
     end
 
@@ -296,7 +296,7 @@ module Ccxt
         request['symbol'] = market['id']
       end
       if since != nil
-        request['startTime'] = self.iso8601(since)
+        request['startTime'] = self.class.iso8601(since)
       end
       if limit != nil
         request['count'] = limit
@@ -306,7 +306,7 @@ module Ccxt
       # E.g. self.class.urlencode({"filter": {"open": true}}) will return "filter={'open':+true}"
       # Bitmex doesn't like that. Hence resorting to self hack.
       if request.include?('filter')
-        request['filter'] = self.json(request['filter'])
+        request['filter'] = self.class.json(request['filter'])
       end
       response = self.privateGetOrder(request)
       return self.parse_orders(response, market, since, limit)
@@ -320,7 +320,7 @@ module Ccxt
     def fetch_closed_orders(symbol=nil, since=nil, limit=nil, params={})
       # Bitmex barfs if you set 'open': false in the filter ...
       orders = self.fetch_orders(symbol, since, limit, params)
-      return self.filter_by(orders, 'status', 'closed')
+      return self.class.filter_by(orders, 'status', 'closed')
     end
 
     def fetch_my_trades(symbol=nil, since=nil, limit=nil, params={})
@@ -332,7 +332,7 @@ module Ccxt
         request['symbol'] = market['id']
       end
       if since != nil
-        request['startTime'] = self.iso8601(since)
+        request['startTime'] = self.class.iso8601(since)
       end
       if limit != nil
         request['count'] = limit
@@ -342,7 +342,7 @@ module Ccxt
       # E.g. self.class.urlencode({"filter": {"open": true}}) will return "filter={'open':+true}"
       # Bitmex doesn't like that. Hence resorting to self hack.
       if request.include?('filter')
-        request['filter'] = self.json(request['filter'])
+        request['filter'] = self.class.json(request['filter'])
       end
       response = self.privateGetExecutionTradeHistory(request)
       #
@@ -554,7 +554,7 @@ module Ccxt
       if market != nil
         symbol = market['symbol']
       end
-      timestamp = self.parse8601(self.class.safe_string(ticker, 'timestamp'))
+      timestamp = self.class.parse8601(self.class.safe_string(ticker, 'timestamp'))
       open = self.class.safe_float(ticker, 'prevPrice24h')
       last = self.class.safe_float(ticker, 'lastPrice')
       change = nil
@@ -568,7 +568,7 @@ module Ccxt
       return {
         'symbol' =>  symbol,
         'timestamp' =>  timestamp,
-        'datetime' =>  self.iso8601(timestamp),
+        'datetime' =>  self.class.iso8601(timestamp),
         'high' =>  self.class.safe_float(ticker, 'highPrice'),
         'low' =>  self.class.safe_float(ticker, 'lowPrice'),
         'bid' =>  self.class.safe_float(ticker, 'bidPrice'),
@@ -582,7 +582,7 @@ module Ccxt
         'previousClose' =>  nil,
         'change' =>  change,
         'percentage' =>  percentage,
-        'average' =>  self.sum(open, last) / 2,
+        'average' =>  self.class.sum(open, last) / 2,
         'baseVolume' =>  self.class.safe_float(ticker, 'homeNotional24h'),
         'quoteVolume' =>  self.class.safe_float(ticker, 'foreignNotional24h'),
         'info' =>  ticker,
@@ -591,7 +591,7 @@ module Ccxt
 
     def parse_ohlcv(ohlcv, market=nil, timeframe='1m', since=nil, limit=nil)
       puts "OHLCV: #{ohlcv}"
-      timestamp = self.parse8601(ohlcv['timestamp'])
+      timestamp = self.class.parse8601(ohlcv['timestamp'])
       return [
           timestamp,
           self.class.safe_float(ohlcv, 'open'),
@@ -626,7 +626,7 @@ module Ccxt
       end
       # if since is not set, they will return candles starting from 2017-01-01
       if since != nil
-        ymdhms = self.ymdhms(since)
+        ymdhms = self.class.ymdhms(since)
         request['startTime'] = ymdhms  # starting date filter for results
       end
       response = self.publicGetTradeBucketed(request.merge params)
@@ -702,7 +702,7 @@ module Ccxt
       #         "timestamp": "2019-03-05T12:47:02.762Z"
       #     }
       #
-      timestamp = self.parse8601(self.class.safe_string(trade, 'timestamp'))
+      timestamp = self.class.parse8601(self.class.safe_string(trade, 'timestamp'))
       price = self.class.safe_float(trade, 'price')
       amount = self.class.safe_float_2(trade, 'size', 'lastQty')
       id = self.class.safe_string(trade, 'trdMatchID')
@@ -744,7 +744,7 @@ module Ccxt
       return {
         'info' => trade,
         'timestamp' => timestamp,
-        'datetime' => self.iso8601(timestamp),
+        'datetime' => self.class.iso8601(timestamp),
         'symbol' => symbol,
         'id' => id,
         'order' => order,
@@ -788,8 +788,8 @@ module Ccxt
           symbol = market['symbol']
         end
       end
-      timestamp = self.parse8601(self.class.safe_string(order, 'timestamp'))
-      lastTradeTimestamp = self.parse8601(self.class.safe_string(order, 'transactTime'))
+      timestamp = self.class.parse8601(self.class.safe_string(order, 'timestamp'))
+      lastTradeTimestamp = self.class.parse8601(self.class.safe_string(order, 'transactTime'))
       price = self.class.safe_float(order, 'price')
       amount = self.class.safe_float(order, 'orderQty')
       filled = self.class.safe_float(order, 'cumQty', 0.0)
@@ -812,7 +812,7 @@ module Ccxt
         'info': order,
         'id': str(order['orderID']),
         'timestamp': timestamp,
-        'datetime': self.iso8601(timestamp),
+        'datetime': self.class.iso8601(timestamp),
         'lastTradeTimestamp': lastTradeTimestamp,
         'symbol': symbol,
         'type': order['ordType'].lower(),
@@ -837,7 +837,7 @@ module Ccxt
       }
       # puts "#{request}"
       if since != nil
-        request['startTime'] = self.iso8601(since)
+        request['startTime'] = self.class.iso8601(since)
       end
       if limit != nil
         request['count'] = limit
@@ -985,7 +985,7 @@ module Ccxt
     end
 
     def nonce
-      return self.milliseconds
+      return self.class.milliseconds
     end
 
     def sign(path, api='public', method='GET', params={}, headers=nil, body=nil)
@@ -1004,17 +1004,17 @@ module Ccxt
             'Content-Type': 'application/json',
             'api-key': self.apiKey,
         }
-        expires = self.sum(self.seconds(), expires)
+        expires = self.class.sum(self.class.seconds(), expires)
         expires = expires.to_s
         auth += expires
         headers['api-expires'] = expires
         if method == 'POST' or method == 'PUT'
           if params
-            body = self.json(params)
+            body = self.class.json(params)
             auth += body
           end
         end
-        headers['api-signature'] = self.hmac(self.class.encode(auth), self.class.encode(self.secret))
+        headers['api-signature'] = self.class.hmac(self.class.encode(auth), self.class.encode(self.secret))
       end
       return {'url' => url, 'method' => method, 'body' => body, 'headers' => headers}
     end
