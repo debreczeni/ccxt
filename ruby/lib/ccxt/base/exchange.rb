@@ -1094,7 +1094,7 @@ module Ccxt
       end
 
       def safe_float_2(hash, key1, key2, default_value = nil)
-        return self.safe_either(method(:safe_float), hash, key1, key2, default_value)
+        return self.class.safe_either(method(:safe_float), hash, key1, key2, default_value)
       end
 
       def safe_integer(hash, key, default_value = nil)
@@ -1107,7 +1107,7 @@ module Ccxt
       end
 
       def safe_integer_2(hash, key1, key2, default_value = nil)
-        return self.safe_either(method(:safe_integer), hash, key1, key2, default_value)
+        return self.class.safe_either(method(:safe_integer), hash, key1, key2, default_value)
       end
 
       def safe_string(hash, key, default_value = nil)
@@ -1120,7 +1120,7 @@ module Ccxt
       end
 
       def safe_string_2(hash, key1, key2, default_value = nil)
-        return self.safe_either(method(:safe_string), hash, key1, key2, default_value)
+        return self.class.safe_either(method(:safe_string), hash, key1, key2, default_value)
       end
 
       def safe_value(hash, key, default_value = nil)
@@ -1133,12 +1133,12 @@ module Ccxt
       end
 
       def safe_value_2(hash, key1, key2, default_value = nil)
-        return self.safe_either(method(:safe_string), hash, key1, key2, default_value)
+        return self.class.safe_either(method(:safe_string), hash, key1, key2, default_value)
       end
 
       def safe_currency_code(data, key, currency=nil)
         code = nil
-        currency_id = self.safe_string(data, key)
+        currency_id = self.class.safe_string(data, key)
         if self.currencies_by_id.include?(currency_id)
           currency = self.currencies_by_id[currency_id]
         else
@@ -1290,7 +1290,7 @@ module Ccxt
       if not self.substituteCommonCurrencyCodes
         return currency
       end
-      return self.safe_string(self.commonCurrencies, currency, currency)
+      return self.class.safe_string(self.commonCurrencies, currency, currency)
     end
 
     def currency_id(commonCode)
@@ -1298,7 +1298,7 @@ module Ccxt
         return self.currencies[commonCode]['id']
       end
       currencyIds = self.commonCurrencies.invert
-      return self.safe_string(currencyIds, commonCode, commonCode)
+      return self.class.safe_string(currencyIds, commonCode, commonCode)
     end
 
     def precision_from_string(string)
@@ -1627,7 +1627,7 @@ module Ccxt
         'gether'=> 27,      # 1000000000000000000000000000
         'tether'=> 30,      # 1000000000000000000000000000000
       }
-      return self.safe_value(units, unit)
+      return self.class.safe_value(units, unit)
     end
 
     def eth_unit(decimals = 18)
@@ -1644,7 +1644,7 @@ module Ccxt
         27=> 'gether',  # 0.000000001
         30=> 'tether',  # 0.000000000001
       }
-      return self.safe_value(units, decimals)
+      return self.class.safe_value(units, decimals)
     end
 
     def fromWei(amount, unit = 'ether', decimals = 18)
