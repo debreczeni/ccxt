@@ -257,7 +257,7 @@ module Ccxt
           self.accounts = self.fetch_accounts(params)
         end
       end
-      self.accountsById = self.index_by(self.accounts, 'id')
+      self.accountsById = self.class.index_by(self.accounts, 'id')
       return self.accounts
     end
 
@@ -318,7 +318,7 @@ module Ccxt
     end
 
     def parse_balance(balance)
-      currencies = self.omit(balance, 'info').keys
+      currencies = self.class.omit(balance, 'info').keys
       ['free', 'used', 'total'].each do |account|
         balance[account] = {}
         currencies.each do |currency|
@@ -443,7 +443,7 @@ module Ccxt
     def purge_cached_orders(before)
       orders = self.to_array(self.orders)
       orders = orders.select{|order| (order['status'] == 'open') || (order['timestamp'] >= before)}
-      self.orders = self.index_by(orders, 'id')
+      self.orders = self.class.index_by(orders, 'id')
       return self.orders
     end
 
@@ -571,8 +571,8 @@ module Ccxt
         defaults = self.fees['trading'].merge 'precision' => self.precision, 'limits' => self.limits
         values[i] = defaults.merge values[i]
       end
-      self.markets = self.index_by(values, 'symbol')
-      self.markets_by_id = self.index_by(values, 'id')
+      self.markets = self.class.index_by(values, 'symbol')
+      self.markets_by_id = self.class.index_by(values, 'id')
       self.marketsById = self.markets_by_id
       self.symbols = self.markets.keys.sort
       self.ids = self.markets_by_id.keys.sort
@@ -598,9 +598,9 @@ module Ccxt
           }
         end
         currencies_to_set = self.sort_by(base_currencies + quote_currencies, 'code')
-        self.currencies = self.class.deep_extend(self.index_by(currencies_to_set, 'code'), self.currencies)
+        self.currencies = self.class.deep_extend(self.class.index_by(currencies_to_set, 'code'), self.currencies)
       end
-      self.currencies_by_id = self.index_by(self.currencies.values, 'id')
+      self.currencies_by_id = self.class.index_by(self.currencies.values, 'id')
       return self.markets
     end
 
@@ -1549,7 +1549,7 @@ module Ccxt
 
       # return all of them if no values were passed in
       if values.nil?
-        return indexed ? self.index_by(objects, key) : objects
+        return indexed ? self.class.index_by(objects, key) : objects
       end
 
       result = []
@@ -1559,7 +1559,7 @@ module Ccxt
           result.append(object)
         end
       end
-      return indexed ? self.index_by(result, key) : result
+      return indexed ? self.class.index_by(result, key) : result
     end
 
     def currency(code)

@@ -1014,7 +1014,7 @@ module Ccxt
             auth += body
           end
         end
-        headers['api-signature'] = self.hmac(self.encode(auth), self.encode(self.secret))
+        headers['api-signature'] = self.hmac(self.class.encode(auth), self.class.encode(self.secret))
       end
       return {'url' => url, 'method' => method, 'body' => body, 'headers' => headers}
     end

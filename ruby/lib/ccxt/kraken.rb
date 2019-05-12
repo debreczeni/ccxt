@@ -337,7 +337,7 @@ module Ccxt
         }
       end
       result = self.append_inactive_markets(result)
-      self.marketsByAltname = self.index_by(result, 'altname')
+      self.marketsByAltname = self.class.index_by(result, 'altname')
       return result
     end
 
@@ -1348,15 +1348,15 @@ module Ccxt
         self.check_required_credentials()
         nonce = self.nonce.to_s
         body = self.class.urlencode({'nonce' => nonce}.merge params)
-        auth = self.encode(nonce + body)
-        hash = self.hash(auth, 'sha256', 'binary')
-        binary = self.encode(url)
-        binhash = self.binary_concat(binary, hash)
+        auth = self.class.encode(nonce + body)
+        hash = self.class.hash(auth, 'sha256', 'binary')
+        binary = self.class.encode(url)
+        binhash = self.class.binary_concat(binary, hash)
         secret = Base64.decode64(self.secret)
-        signature = self.hmac(binhash, secret, 'sha512', 'base64')
+        signature = self.class.hmac(binhash, secret, 'sha512', 'base64')
         headers = {
           'API-Key' => self.apiKey,
-          'API-Sign' => self.decode(signature),
+          'API-Sign' => self.class.decode(signature),
           'Content-Type' => 'application/x-www-form-urlencoded',
         }
       else
@@ -1367,7 +1367,7 @@ module Ccxt
     end
 
     def nonce()
-      return self.milliseconds()
+      return self.class.milliseconds
     end
 
     def handle_errors(code, reason, url, method, headers, body, response)
