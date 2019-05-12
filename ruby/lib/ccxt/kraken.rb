@@ -1342,12 +1342,12 @@ module Ccxt
       url = '/' + self.version + '/' + api + '/' + path
       if api == 'public'
         if params
-          url += '?' + self.urlencode(params)
+          url += '?' + self.class.urlencode(params)
         end
       elsif api == 'private'
         self.check_required_credentials()
         nonce = self.nonce.to_s
-        body = self.urlencode({'nonce' => nonce}.merge params)
+        body = self.class.urlencode({'nonce' => nonce}.merge params)
         auth = self.encode(nonce + body)
         hash = self.hash(auth, 'sha256', 'binary')
         binary = self.encode(url)

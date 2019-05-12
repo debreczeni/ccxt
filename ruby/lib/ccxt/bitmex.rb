@@ -303,7 +303,7 @@ module Ccxt
       end
       request = self.class.deep_extend(request, params)
       # why the hassle? urlencode in python is kinda broken for nested dicts.
-      # E.g. self.urlencode({"filter": {"open": true}}) will return "filter={'open':+true}"
+      # E.g. self.class.urlencode({"filter": {"open": true}}) will return "filter={'open':+true}"
       # Bitmex doesn't like that. Hence resorting to self hack.
       if request.include?('filter')
         request['filter'] = self.json(request['filter'])
@@ -339,7 +339,7 @@ module Ccxt
       end
       request = self.class.deep_extend(request, params)
       # why the hassle? urlencode in python is kinda broken for nested dicts.
-      # E.g. self.urlencode({"filter": {"open": true}}) will return "filter={'open':+true}"
+      # E.g. self.class.urlencode({"filter": {"open": true}}) will return "filter={'open':+true}"
       # Bitmex doesn't like that. Hence resorting to self hack.
       if request.include?('filter')
         request['filter'] = self.json(request['filter'])
@@ -879,9 +879,9 @@ module Ccxt
       self.load_markets()
       request = {
           'symbol' => self.market_id(symbol),
-          'side' => self.capitalize(side),
+          'side' => self.class.capitalize(side),
           'orderQty' => amount,
-          'ordType' => self.capitalize(type),
+          'ordType' => self.class.capitalize(type),
       }
       if price != nil
         request['price'] = price
@@ -992,7 +992,7 @@ module Ccxt
       query = '/api/' + self.version + '/' + path
       if method != 'PUT'
         if params
-          query += '?' + self.urlencode(params)
+          query += '?' + self.class.urlencode(params)
         end
       end
       url = self.urls['api'] + query

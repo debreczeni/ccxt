@@ -696,7 +696,7 @@ module Ccxt
 
     def fetch2(path, api = 'public', method = 'GET', params = {}, headers = nil, body = nil)
       throttle if enableRateLimit
-      self.lastRestRequestTimestamp = milliseconds
+      self.lastRestRequestTimestamp = Exchange.milliseconds
       request = sign(path, api, method, params, headers, body)
       return fetch(request['url'], request['method'], request['headers'], request['body'])
     end
@@ -719,7 +719,7 @@ module Ccxt
           payload: payload
         )
         http_response = response.body
-        json_response = self.is_json_encoded_object(http_response) ? JSON.parse(http_response) : nil
+        json_response = self.class.is_json_encoded_object(http_response) ? JSON.parse(http_response) : nil
         headers = response.headers
 
         self.last_http_response = http_response if self.enableLastHttpResponse
@@ -773,7 +773,7 @@ module Ccxt
     def handle_errors(code, reason, url, method, headers, body, response); end
 
     def handle_rest_response(response, json_response, url, method = 'GET', headers = nil, body = nil)
-      if self.is_json_encoded_object(response) && json_response.nil?
+      if self.class.is_json_encoded_object(response) && json_response.nil?
         ddos_protection = response =~ /(cloudflare|incapsula|overload|ddos)/i
         exchange_not_available = response =~ /(offline|busy|retry|wait|unavailable|maintain|maintenance|maintenancing)/i
         if ddos_protection
@@ -805,8 +805,8 @@ module Ccxt
             split_path = url.split(delimiters)
             uppercase_method = http_method.upcase
             lowercase_method = http_method.downcase
-            camelcase_method = capitalize(lowercase_method)
-            camelcase_suffix = split_path.map{|p| capitalize(p)}.join('')
+            camelcase_method = self.class.capitalize(lowercase_method)
+            camelcase_suffix = split_path.map{|p| self.class.capitalize(p)}.join('')
             underscore_suffix = split_path.map{|p| p.strip.downcase}.join('_')
 
             camelcase = api_type + camelcase_method + camelcase_suffix
@@ -1268,7 +1268,7 @@ module Ccxt
       end
 
       # Ruby default capitalize will capitalize the first letter and lower the others.
-      def self.capitalize(string)
+      def capitalize(string)
         if string.length > 1
           return (string[0].upcase + string[1..-1])
         else
